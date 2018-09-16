@@ -52,22 +52,6 @@ void	exit_message(const char *str)
 	exit(0);
 }
 
-void	init_sdl(t_sdl *sdl)
-{
-	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
-		exit_message("Error in init sdl");
-	if (!(sdl->window = SDL_CreateWindow("Wolf3D",
-						SDL_WINDOWPOS_UNDEFINED,
-						SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT,
-						SDL_WINDOW_SHOWN)))
-		exit_message("Error creating window");
-	if (!(sdl->rend = SDL_CreateRenderer(sdl->window, -1,
-							SDL_RENDERER_ACCELERATED)))
-		exit_message("Error in creating renderer");
-	if (!(sdl->sur = SDL_CreateRGBSurface(0, WIDTH, HEIGHT, 32, 0, 0, 0, 0)))
-		exit_message("Error in creating surface");
-	sdl->keyboard_state = SDL_GetKeyboardState(NULL);
-}
 
 void	key_events(SDL_Event *event)
 {
@@ -96,6 +80,22 @@ void	sdl_events(SDL_Event *event)
 	}
 }
 
+void	init_sdl(t_sdl *sdl)
+{
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+		exit_message("Error in init sdl");
+	if (!(sdl->window = SDL_CreateWindow("Wolf3D",
+						SDL_WINDOWPOS_UNDEFINED,
+						SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT,
+						SDL_WINDOW_SHOWN)))
+		exit_message("Error creating window");
+	if (!(sdl->rend = SDL_CreateRenderer(sdl->window, -1,
+							SDL_RENDERER_ACCELERATED)))
+		exit_message("Error in creating renderer");
+	if (!(sdl->sur = SDL_CreateRGBSurface(0, WIDTH, HEIGHT, 32, 0, 0, 0, 0)))
+		exit_message("Error in creating surface");
+}
+
 int main(int argc, char **argv)
 {
 	SDL_Event	event;
@@ -104,16 +104,14 @@ int main(int argc, char **argv)
 
 	init_sdl(&sdl);
 
-	int pixels[1440000];
-	for (int i =0; i < 1200; i++)
-		for (int j = 0; j < 1200; j++)
-			pixels[i * 1200 + j] = 0xff;
+	for (int i =0; i < 800; i++)
+		for (int j = 0; j < 800; j++)
+			((int *)sdl.sur->pixels)[i * 800 + j] = 0xff;
+	
 	while (1)
 	{
 		sdl_events(&event);
 		
-		sdl.sur->pixels = pixels;
-
 		sdl.text = SDL_CreateTextureFromSurface(sdl.rend, sdl.sur);
 		SDL_RenderCopy(sdl.rend, sdl.text, NULL, NULL);
 		SDL_RenderPresent(sdl.rend);
