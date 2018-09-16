@@ -12,9 +12,114 @@
 
 #include "wolf.h"
 
+#define K_K key.keysym.scancode
+#define E_TYPE type
+
+#define MAP_WIDTH 24
+#define MAP_HEIGHT 24
+
+int worldMap[MAP_WIDTH][MAP_HEIGHT]=
+{
+  {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,2,2,2,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1},
+  {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,3,0,0,0,3,0,0,0,1},
+  {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,2,2,0,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,4,0,0,0,0,5,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,4,0,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+};
+
+void	exit_message(const char *str)
+{
+	ft_putendl(str);
+	exit(0);
+}
+
+void	init_sdl(t_sdl *sdl)
+{
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+		exit_message("Error in init sdl");
+	if (!(sdl->window = SDL_CreateWindow("Wolf3D",
+						SDL_WINDOWPOS_UNDEFINED,
+						SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT,
+						SDL_WINDOW_SHOWN)))
+		exit_message("Error creating window");
+	if (!(sdl->rend = SDL_CreateRenderer(sdl->window, -1,
+							SDL_RENDERER_ACCELERATED)))
+		exit_message("Error in creating renderer");
+	if (!(sdl->sur = SDL_CreateRGBSurface(0, WIDTH, HEIGHT, 32, 0, 0, 0, 0)))
+		exit_message("Error in creating surface");
+	sdl->keyboard_state = SDL_GetKeyboardState(NULL);
+}
+
+void	key_events(SDL_Event *event)
+{
+	(event->K_K == SDL_SCANCODE_ESCAPE) ? exit(0) : 0;
+	/*
+	(event->K_K == SDL_SCANCODE_UP) ? (mlx->scene->cam.d.x += 5) : 0;
+	(event->K_K == SDL_SCANCODE_DOWN) ? (mlx->scene->cam.d.x -= 5) : 0;
+	(event->K_K == SDL_SCANCODE_LEFT) ? (mlx->scene->cam.d.y += 5) : 0;
+	(event->K_K == SDL_SCANCODE_RIGHT) ? (mlx->scene->cam.d.y -= 5) : 0;
+	(event->K_K == SDL_SCANCODE_A) ? (mlx->scene->cam.p.x -= 0.5f) : 0;
+	(event->K_K == SDL_SCANCODE_D) ? (mlx->scene->cam.p.x += 0.5f) : 0;
+	(event->K_K == SDL_SCANCODE_W) ? (mlx->scene->cam.p.z += 0.5f) : 0;
+	(event->K_K == SDL_SCANCODE_S) ? (mlx->scene->cam.p.z -= 0.5f) : 0;
+	(event->K_K == SDL_SCANCODE_E) ? (mlx->scene->cam.p.y += 0.5f) : 0;
+	(event->K_K == SDL_SCANCODE_Q) ? (mlx->scene->cam.p.y -= 0.5f) : 0;*/
+}
+
+void	sdl_events(SDL_Event *event)
+{
+	while (SDL_PollEvent(event))
+	{
+		if (event->E_TYPE == SDL_KEYDOWN)
+			key_events(event);
+		else if (event->E_TYPE == SDL_QUIT)
+			exit(1);
+	}
+}
+
 int main(int argc, char **argv)
 {
-	ft_putendl("wolf");
+	SDL_Event	event;
+	t_sdl		sdl;
+	SDL_Rect	dst_r;
+
+	init_sdl(&sdl);
+
+	int pixels[1440000];
+	for (int i =0; i < 1200; i++)
+		for (int j = 0; j < 1200; j++)
+			pixels[i * 1200 + j] = 0xff;
+	while (1)
+	{
+		sdl_events(&event);
+		
+		sdl.sur->pixels = pixels;
+
+		sdl.text = SDL_CreateTextureFromSurface(sdl.rend, sdl.sur);
+		SDL_RenderCopy(sdl.rend, sdl.text, NULL, NULL);
+		SDL_RenderPresent(sdl.rend);
+		SDL_DestroyTexture(sdl.text);
+	}
+	SDL_Quit();
 	return (0);
 }
 
