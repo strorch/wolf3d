@@ -19,16 +19,11 @@
 # define WIDTH 800
 
 
-# include "../frameworks/SDL2.framework/Headers/SDL.h"
-# include "../frameworks/SDL2_ttf.framework/Headers/SDL_ttf.h"
+// # include "../frameworks/SDL2.framework/Headers/SDL.h"
+// # include "../frameworks/SDL2_ttf.framework/Headers/SDL_ttf.h"
 
-# ifdef linux
-#  include <SDL2/SDL.h>
-#  include <SDL2/SDL_image.h>
-# else
-#  include "SDL.h"
-#  include "SDL_image.h"
-# endif
+# include <SDL2/SDL.h>
+// #  include <SDL2/SDL_image.h>
 
 
 typedef struct	s_sdl

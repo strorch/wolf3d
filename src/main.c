@@ -104,9 +104,9 @@ int main(int argc, char **argv)
 
 	init_sdl(&sdl);
 
-	for (int i =0; i < 800; i++)
-		for (int j = 0; j < 800; j++)
-			((int *)sdl.sur->pixels)[i * 800 + j] = 0xff;
+	// for (int i =0; i < 500; i++)
+	// 	for (int j = 0; j < 100; j++)
+	// 		((int *)sdl.sur->pixels)[i * 100 + j] = 0xff;
 	
 	while (1)
 	{
