@@ -2,3 +2,6 @@
 *.a
 *.obj
 obj
+.vscode/
+.DS_Store
+wolf
