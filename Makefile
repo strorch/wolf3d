@@ -35,7 +35,7 @@ CC = gcc
 
 #CFLAGS = -Wall -Wextra -Werror
 #CFLAGS += -g
-ifeq ($(OS),Linux)
+ifeq ($(DESKTOP_SESSION),ubuntu)
     INCLUDES	+=	`sdl2-config --cflags --libs` -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf
 else
 	INCLUDES	=	-I./frameworks/SDL2.framework/Headers/
