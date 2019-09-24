@@ -14,17 +14,21 @@
 # define WOLF_H
 
 # include "../libft/libft.h"
-# include <math.h>
 # define HEIGHT 800
 # define WIDTH 800
 
+# include <math.h>
+# include <pwd.h>
 
-// # include "../frameworks/SDL2.framework/Headers/SDL.h"
-// # include "../frameworks/SDL2_ttf.framework/Headers/SDL_ttf.h"
-
-# include <SDL2/SDL.h>
-// #  include <SDL2/SDL_image.h>
-
+# ifdef linux
+#  include <SDL2/SDL.h>
+#  include <SDL2/SDL_image.h>
+#  include <SDL2/SDL_ttf.h>
+# else
+#  include "SDL.h"
+#  include "SDL_image.h"
+#  include "SDL_ttf.h"
+# endif
 
 typedef struct	s_sdl
 {

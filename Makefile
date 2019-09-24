@@ -25,7 +25,6 @@
 #install sdl true type fonts
 # sudo apt install libfreetype6-dev libsdl2-ttf-dev libsdl2-ttf-2.0-0 -y;
 
-
 ### USAGE
 # `sdl2-config --cflags --libs` -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf
 
@@ -36,21 +35,22 @@ CC = gcc
 
 #CFLAGS = -Wall -Wextra -Werror
 #CFLAGS += -g
+ifeq ($(OS),Linux)
+    INCLUDES	+=	`sdl2-config --cflags --libs` -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf
+else
+	INCLUDES	=	-I./frameworks/SDL2.framework/Headers/
+	INCLUDES	+=  -I./frameworks/SDL2_image.framework/Headers/
+	INCLUDES	+=  -I./frameworks/SDL2_ttf.framework/Headers/
+	INCLUDES	+=  -F./frameworks
+
+	FRAMEWORKS	=	-framework OpenGL -framework AppKit \
+					-framework SDL2 -framework SDL2_image -framework SDL2_ttf -rpath ./frameworks 
+# 	INCLUDES	+=	-L./frameworks/SDL2.frameworks/
+endif
 
 LIBFT_DIR = ./libft/
 LIB_FLAGS = -L$(LIBFT_DIR) -lft
 
-# INCLUDES	=	-I./frameworks/SDL2.framework/Headers/
-# INCLUDES	+=  -I./frameworks/SDL2_image.framework/Headers/
-# INCLUDES	+=  -I./frameworks/SDL2_ttf.framework/Headers/
-# INCLUDES	+=  -F./frameworks 
-
-# INCLUDES	+=	-L./frameworks/SDL2.framework/
-
-# FRAMEWORKS	=	-framework OpenGL -framework AppKit \
-					-framework SDL2 -framework SDL2_image -framework SDL2_ttf -rpath ./frameworks 
-
-INCLUDES	+=	`sdl2-config --cflags --libs` -lSDL2
 INCLUDES	+= -I./includes/
 
 SRC_DIR = ./src/
