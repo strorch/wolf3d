@@ -10,53 +10,47 @@
 #                                                                              #
 # **************************************************************************** #
 
-
 ### LINUX SDL INSTALLATION
 
 #install sdl2
 # sudo apt install libsdl2-dev libsdl2-2.0-0 -y;
-
 #install sdl image
 # sudo apt install libjpeg9-dev libwebp-dev libtiff5-dev libsdl2-image-dev libsdl2-image-2.0-0 -y;
-
 #install sdl mixer
 # sudo apt install libmikmod-dev libfishsound1-dev libsmpeg-dev liboggz2-dev libflac-dev libfluidsynth-dev libsdl2-mixer-dev libsdl2-mixer-2.0-0 -y;
-
 #install sdl true type fonts
 # sudo apt install libfreetype6-dev libsdl2-ttf-dev libsdl2-ttf-2.0-0 -y;
 
-### USAGE
-# `sdl2-config --cflags --libs` -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf
-
-NAME = wolf
-LIBFTA = libft/libft.a
+NAME = wolf3d
 
 CC = gcc
-
 #CFLAGS = -Wall -Wextra -Werror
 #CFLAGS += -g
+
+FRAMEWORKS_DIR	= ./frameworks/
+LIBFT_DIR		= ./libft/
+INCLUDES_DIR	= ./includes/
+SRC_DIR			= ./src/
+OBJ_DIR			= ./obj/
+
+SOURCES			= main.c
+
 ifeq ($(DESKTOP_SESSION),ubuntu)
     INCLUDES	+=	`sdl2-config --cflags --libs` -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf
 else
-	INCLUDES	=	-I./frameworks/SDL2.framework/Headers/
-	INCLUDES	+=  -I./frameworks/SDL2_image.framework/Headers/
-	INCLUDES	+=  -I./frameworks/SDL2_ttf.framework/Headers/
-	INCLUDES	+=  -F./frameworks
+	INCLUDES	=	-I$(FRAMEWORKS_DIR)SDL2.framework/Headers/
+	INCLUDES	+=  -I$(FRAMEWORKS_DIR)SDL2_image.framework/Headers/
+	INCLUDES	+=  -I$(FRAMEWORKS_DIR)SDL2_ttf.framework/Headers/
+	INCLUDES	+=  -F$(FRAMEWORKS_DIR)
 
 	FRAMEWORKS	=	-framework OpenGL -framework AppKit \
-					-framework SDL2 -framework SDL2_image -framework SDL2_ttf -rpath ./frameworks 
-# 	INCLUDES	+=	-L./frameworks/SDL2.frameworks/
+					-framework SDL2 -framework SDL2_image -framework SDL2_ttf -rpath $(FRAMEWORKS_DIR)
 endif
 
-LIBFT_DIR = ./libft/
-LIB_FLAGS = -L$(LIBFT_DIR) -lft
+INCLUDES		+=	-I$(INCLUDES_DIR)
 
-INCLUDES	+= -I./includes/
-
-SRC_DIR = ./src/
-OBJ_DIR = ./obj/
-
-SOURCES = main.c
+LIBFTA			=	$(LIBFT_DIR)libft.a
+LIB_FLAGS		=	-L$(LIBFT_DIR) -lft
 
 OBJ = $(addprefix $(OBJ_DIR), $(SOURCES:.c=.o))
 
@@ -65,7 +59,7 @@ all: $(NAME)
 $(NAME): $(LIBFTA) $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) $(LIB_FLAGS) -o $(NAME) $(INCLUDES) $(FRAMEWORKS)
 
-$(OBJ_DIR)%.o: $(SRC_DIR)%.c ./includes/wolf.h
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INCLUDES_DIR)*.h
 	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES)
 
 $(OBJ): | $(OBJ_DIR)
