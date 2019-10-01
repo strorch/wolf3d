@@ -96,7 +96,7 @@ void	init_sdl(t_sdl *sdl)
 		exit_message("Error in creating surface");
 }
 
-int*	drawFunc(int color)
+int*	drawFunc1(int color)
 {
 	int i;
 	int j;
@@ -116,30 +116,56 @@ int*	drawFunc(int color)
 	return pict;
 }
 
+int*	drawFunc(int *pixels, int color)
+{
+	int i;
+	int j;
+	// int *pict;
+
+	i = 0;
+	// pict = *pixels;
+	while (i++ < 800)
+	{
+		j = 0;
+		while (j++ < 800)
+		{
+			if (i >400 && i < 600)
+				pixels[800 * i + j] = color;
+		}
+	}
+	return pixels;
+}
+
 int		main(int argc, char **argv)
 {
 	SDL_Event	event;
 	t_app		app;
-	t_sdl		sdl;
+	t_sdl		*sdl;
 
-	printf("KEK\n");
 	init_sdl(app.sdl);
-	// sdl = *app.sdl;
-	// app.game = (t_game *)ft_memalloc(sizeof(t_game));
-	// app.game->color.x = 255;
-	// app.game->color.y = 0;
-	// app.game->color.z = 0;
-	// while (1)
-	// {
-	// 	free(sdl.sur->pixels);
-	// 	sdl_events(&event, &app);
-	// 	sdl.sur->pixels = drawFunc(get_hex_color(app.game->color));
-	// 	sdl.text = SDL_CreateTextureFromSurface(sdl.rend, sdl.sur);
-	// 	SDL_RenderCopy(sdl.rend, sdl.text, NULL, NULL);
-	// 	SDL_RenderPresent(sdl.rend);
-	// 	SDL_DestroyTexture(sdl.text);
-	// }
-	// TTF_Quit();
-	// SDL_Quit();
+	app.game = (t_game *)ft_memalloc(sizeof(t_game));
+	app.game->color.x = 255;
+	app.game->color.y = 0;
+	app.game->color.z = 0;
+	sdl = app.sdl;
+	// int *tmp_arr = drawFunc(get_hex_color(app.game->color));
+	while (1)
+	{
+		// free(sdl->sur->pixels);
+		sdl_events(&event, &app);
+		printf("KEK\n");
+		drawFunc(sdl->sur->pixels, get_hex_color(app.game->color));
+		printf("KEK\n");
+		
+		// int a = get_hex_color(app.game->color);
+		// sdl->sur->pixels = tmp_arr;
+
+		sdl->text = SDL_CreateTextureFromSurface(sdl->rend, sdl->sur);
+		SDL_RenderCopy(sdl->rend, sdl->text, NULL, NULL);
+		SDL_RenderPresent(sdl->rend);
+		SDL_DestroyTexture(sdl->text);
+	}
+	TTF_Quit();
+	SDL_Quit();
 	return (0);
 }
