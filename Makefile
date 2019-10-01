@@ -33,7 +33,10 @@ INCLUDES_DIR	= ./includes/
 SRC_DIR			= ./src/
 OBJ_DIR			= ./obj/
 
-SOURCES			= main.c
+SOURCES			= main.c \
+					game_main.c \
+					read_map.c \
+					colors.c
 
 ifeq ($(DESKTOP_SESSION),ubuntu)
     INCLUDES	+=	`sdl2-config --cflags --libs` -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf
