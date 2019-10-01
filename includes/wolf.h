@@ -30,6 +30,25 @@
 #  include "SDL_ttf.h"
 # endif
 
+typedef struct	s_vec
+{
+	int			x;
+	int			y;
+	int			z;
+}				t_vec;
+
+
+typedef struct	s_camera
+{
+	t_vec		dir;
+	t_vec		pox;
+}				t_camera;
+
+typedef struct	s_user
+{
+	t_camera	cam;
+}				t_user;
+
 typedef struct	s_sdl
 {
 	SDL_Window		*window;
@@ -38,5 +57,17 @@ typedef struct	s_sdl
 	SDL_Texture		*text;
 	SDL_Event		event;
 }				t_sdl;
+
+typedef struct	s_game
+{
+	t_vec		color;
+	t_user		user;
+}				t_game;
+
+typedef struct	s_app
+{
+	t_sdl		*sdl;
+	t_game		*game;
+}				t_app;
 
 #endif
