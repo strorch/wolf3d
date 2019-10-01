@@ -81,6 +81,7 @@ void	sdl_events(SDL_Event *event, t_app *app)
 
 void	init_sdl(t_sdl *sdl)
 {
+	sdl = (t_sdl*)ft_memalloc(sizeof(t_sdl));
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 		exit_message("Error in init sdl");
 	if (!(sdl->window = SDL_CreateWindow("Wolf3D",
@@ -121,24 +122,24 @@ int		main(int argc, char **argv)
 	t_app		app;
 	t_sdl		sdl;
 
+	printf("KEK\n");
 	init_sdl(app.sdl);
-	sdl = *app.sdl;
-
-	app.game = (t_game *)ft_memalloc(sizeof(t_game));
-	app.game->color.x = 255;
-	app.game->color.y = 0;
-	app.game->color.z = 0;
-	while (1)
-	{
-		free(sdl.sur->pixels);
-		sdl_events(&event, &app);
-		sdl.sur->pixels = drawFunc(get_hex_color(app.game->color));
-		sdl.text = SDL_CreateTextureFromSurface(sdl.rend, sdl.sur);
-		SDL_RenderCopy(sdl.rend, sdl.text, NULL, NULL);
-		SDL_RenderPresent(sdl.rend);
-		SDL_DestroyTexture(sdl.text);
-	}
-	TTF_Quit();
-	SDL_Quit();
+	// sdl = *app.sdl;
+	// app.game = (t_game *)ft_memalloc(sizeof(t_game));
+	// app.game->color.x = 255;
+	// app.game->color.y = 0;
+	// app.game->color.z = 0;
+	// while (1)
+	// {
+	// 	free(sdl.sur->pixels);
+	// 	sdl_events(&event, &app);
+	// 	sdl.sur->pixels = drawFunc(get_hex_color(app.game->color));
+	// 	sdl.text = SDL_CreateTextureFromSurface(sdl.rend, sdl.sur);
+	// 	SDL_RenderCopy(sdl.rend, sdl.text, NULL, NULL);
+	// 	SDL_RenderPresent(sdl.rend);
+	// 	SDL_DestroyTexture(sdl.text);
+	// }
+	// TTF_Quit();
+	// SDL_Quit();
 	return (0);
 }
