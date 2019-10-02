@@ -33,7 +33,8 @@ INCLUDES_DIR	= ./includes/
 SRC_DIR			= ./src/
 OBJ_DIR			= ./obj/
 
-SOURCES			= main.c \
+SOURCES			= \
+					main.c \
 					game_main.c \
 					read_map.c \
 					colors.c

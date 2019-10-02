@@ -10,11 +10,15 @@
 #                                                                              #
 # **************************************************************************** #
 
+# TODO: http://www.cs.colby.edu/maxwell/courses/tutorials/maketutor/
+
 NAME = libft.a
 
 FLAGS = -Wall -Wextra -Werror -c
 
 OPTION = -I.
+
+HEADERS = *.h
 
 FILES = \
 		ft_rmchar.c \
@@ -81,9 +85,8 @@ OBJ = $(FILES:.c=.o)
 
 all: $(NAME)
 
-
-$(NAME): $(FILES) *.h
-	@gcc $(FLAGS) $< $(OPTION)
+$(NAME): $(FILES) $(HEADERS)
+	@gcc $(FLAGS) $(FILES) $(OPTION)
 	@ar rc $(NAME) $(OBJ)
 	@ranlib $(NAME)
 
