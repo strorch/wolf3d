@@ -81,8 +81,9 @@ OBJ = $(FILES:.c=.o)
 
 all: $(NAME)
 
-$(NAME):
-	@gcc $(FLAGS) $(FILES) $(OPTION)
+
+$(NAME): $(FILES) *.h
+	@gcc $(FLAGS) $< $(OPTION)
 	@ar rc $(NAME) $(OBJ)
 	@ranlib $(NAME)
 
