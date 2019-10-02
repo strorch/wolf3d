@@ -53,14 +53,14 @@ endif
 INCLUDES		+=	-I$(INCLUDES_DIR)
 
 LIBFTA			=	$(LIBFT_DIR)libft.a
-LIB_FLAGS		=	-L$(LIBFT_DIR) -lft
+LIBFTA_FLAGS	=	-L$(LIBFT_DIR) -lft
 
 OBJ = $(addprefix $(OBJ_DIR), $(SOURCES:.c=.o))
 
 all: $(NAME)
 
 $(NAME): $(LIBFTA) $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(LIB_FLAGS) -o $(NAME) $(INCLUDES) $(FRAMEWORKS)
+	$(CC) $(CFLAGS) $(OBJ) $(LIBFTA_FLAGS) -o $(NAME) $(INCLUDES) $(FRAMEWORKS)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INCLUDES_DIR)*.h
 	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES)

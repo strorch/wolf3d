@@ -70,9 +70,24 @@ typedef struct	s_app
 	t_game		*game;
 }				t_app;
 
+/**
+ * read_map.c
+ */
 int				read_map(int argc, char **argv);
+
+/**
+ * game_main.c
+ */
 int				proceed_game(t_app *app_h);
+
+/**
+ * main.c
+ */
 void			exit_message(const char *str);
+
+/**
+ * colors.c
+ */
 int				get_hex_color(t_vec c);
 
 #endif
