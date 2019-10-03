@@ -79,6 +79,7 @@ int				read_map(int argc, char **argv);
  * game_main.c
  */
 int				proceed_game(t_app *app_h);
+int		*get_pixels_map();
 
 /**
  * main.c

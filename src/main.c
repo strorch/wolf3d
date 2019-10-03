@@ -96,7 +96,7 @@ int		main(int argc, char **argv)
 	{
 		sdl_events(&event, &app);
 
-		tmp_arr = get_tmp_arr(get_hex_color(app.game->color));
+		tmp_arr = get_pixels_map();
 	    SDL_LockSurface(sdl->sur);
 	    ft_memcpy(sdl->sur->pixels, tmp_arr, sdl->sur->pitch * sdl->sur->h);
 	    ft_memdel((void **)&tmp_arr);
