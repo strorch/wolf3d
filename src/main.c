@@ -44,9 +44,11 @@ void	exit_message(const char *str)
 
 void	key_events(SDL_Event *event, t_app *app)
 {
-	(event->K_K == SDL_SCANCODE_ESCAPE) ? exit_message("Done!\n") : 0;
-	(event->K_K == SDL_SCANCODE_UP) ? (app->game->color.y += 5) : 0;
-	(event->K_K == SDL_SCANCODE_UP) ? (app->game->color.z += 5) : 0;
+	(event->K_K == SDL_SCANCODE_ESCAPE)	? exit_message("Done!\n") : 0;
+	(event->K_K == SDL_SCANCODE_UP)		? (app->game->color.y += 5) : 0;
+	(event->K_K == SDL_SCANCODE_DOWN)	? (app->game->color.z += 5) : 0;
+	(event->K_K == SDL_SCANCODE_LEFT)	? (app->game->color.y += 5) : 0;
+	(event->K_K == SDL_SCANCODE_RIGHT)	? (app->game->color.z += 5) : 0;
 }
 
 void	sdl_events(SDL_Event *event, t_app *app)

@@ -57,6 +57,10 @@ void	verLine(int **map_h, int x, int startPoint, int endPoint, int color)
 
 int		*get_pixels_map()
 {
+	clock_t start, end;
+	double cpu_time_used;
+
+	start = clock();
 	int *map = (int *)ft_memalloc(sizeof(int) * 800 * 800);
 	double posX = 22, posY = 12;  //x and y start position
 	double dirX = -1, dirY = 0; //initial direction vector
@@ -146,9 +150,9 @@ int		*get_pixels_map()
 		{
 			case 1:  color = 0xff0000;  break; //red
 			case 2:  color = 0x00ff00;  break; //green
-			case 3:  color = 0x0000ff;   break; //blue
+			case 3:  color = 0x0000ff;  break; //blue
 			case 4:  color = 0xffff00;  break; //white
-			default: color = 0x00ffff; break; //yellow
+			default: color = 0x00ffff;  break; //yellow
 		}
 
 		//give x and y sides different brightness
@@ -157,6 +161,13 @@ int		*get_pixels_map()
 		//draw the pixels of the stripe as a vertical line
 		verLine(&map, x, drawStart, drawEnd, color);
 	}
+	end = clock();
+	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+
+	double moveSpeed = cpu_time_used * 5.0; //the constant value is in squares/second
+	double rotSpeed = cpu_time_used * 3.0; //the constant value is in radians/second
+
+
 	return map;
 }
 

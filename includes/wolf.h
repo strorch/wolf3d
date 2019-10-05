@@ -19,6 +19,7 @@
 
 # include <math.h>
 # include <pwd.h>
+# include <time.h>
 
 # ifdef linux
 #  include <SDL2/SDL.h>
