@@ -82,8 +82,8 @@ int		*get_pixels_map()
 		double sideDistX;
 		double sideDistY;
 		//which box of the map we're in
-		double deltaDistX = abs(1 / rayDirX);
-		double deltaDistY = abs(1 / rayDirY);
+		double deltaDistX = fabs(1 / rayDirX);
+		double deltaDistY = fabs(1 / rayDirY);
 		double perpWallDist;
 		int stepX;
 		int stepY;
@@ -167,6 +167,7 @@ int		*get_pixels_map()
 	double moveSpeed = cpu_time_used * 5.0; //the constant value is in squares/second
 	double rotSpeed = cpu_time_used * 3.0; //the constant value is in radians/second
 
+	printf("%f\n", cpu_time_used);
 
 	return map;
 }
