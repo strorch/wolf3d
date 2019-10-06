@@ -38,17 +38,24 @@ typedef struct	s_vec
 	int			z;
 }				t_vec;
 
-
 typedef struct	s_camera
 {
 	t_vec		dir;
-	t_vec		pox;
+	t_vec		pos;
 }				t_camera;
 
 typedef struct	s_user
 {
 	t_camera	cam;
+	int			speed;
 }				t_user;
+
+typedef struct	s_map
+{
+	int			**keys;
+	int			h;
+	int			w;
+}				t_map;
 
 typedef struct	s_sdl
 {
@@ -63,6 +70,7 @@ typedef struct	s_game
 {
 	t_vec		color;
 	t_user		user;
+	t_map		map;
 }				t_game;
 
 typedef struct	s_app
@@ -71,25 +79,25 @@ typedef struct	s_app
 	t_game		*game;
 }				t_app;
 
-/**
- * read_map.c
- */
+/*
+** read_map.c
+*/
 int				read_map(int argc, char **argv);
 
-/**
- * game_main.c
- */
+/*
+** game_main.c
+*/
 int				proceed_game(t_app *app_h);
-int		*get_pixels_map();
+int				*get_pixels_map();
 
-/**
- * main.c
- */
+/*
+** main.c
+*/
 void			exit_message(const char *str);
 
-/**
- * colors.c
- */
+/*
+** colors.c
+*/
 int				get_hex_color(t_vec c);
 
 #endif

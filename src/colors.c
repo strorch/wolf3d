@@ -14,5 +14,5 @@
 
 int		get_hex_color(t_vec c)
 {
-	return c.x * 0x10000 + c.y * 0x100 + c.z;
+	return (c.x * 0x10000 + c.y * 0x100 + c.z);
 }

@@ -15,52 +15,67 @@
 #define K_K key.keysym.scancode
 #define E_TYPE type
 
-int*	get_tmp_arr(int color)
-{
-	int i;
-	int j;
-	int *pict;
-
-	i = -1;
-	pict = (int *)ft_memalloc(800*800 * sizeof(int));
-	while (++i < 800)
-	{
-		j = -1;
-		while (++j < 800)
-		{
-			pict[800 * i + j] = 0x000000;
-			if (i >400 && i < 600)
-				pict[800 * i + j] = color;
-		}
-	}
-	return pict;
-}
-
 void	exit_message(const char *str)
 {
 	ft_putendl(str);
 	exit(0);
 }
 
+void	update_point(t_vec *vec_h)
+{
+	t_vec vec;
+
+	vec = *vec_h;
+	// vec.x
+}
+
 void	key_events(SDL_Event *event, t_app *app)
 {
-	(event->K_K == SDL_SCANCODE_ESCAPE)	? exit_message("Done!\n") : 0;
-	(event->K_K == SDL_SCANCODE_UP)		? (app->game->color.y += 5) : 0;
-	(event->K_K == SDL_SCANCODE_DOWN)	? (app->game->color.z += 5) : 0;
-	(event->K_K == SDL_SCANCODE_LEFT)	? (app->game->color.y += 5) : 0;
-	(event->K_K == SDL_SCANCODE_RIGHT)	? (app->game->color.z += 5) : 0;
+	(event->K_K == SDL_SCANCODE_ESCAPE) ? exit_message("Done!\n") : 0;
+
+	// (event->K_K == SDL_SCANCODE_DOWN)	? (app->game.user.cam.pos. += 5) : 0;
+	// if (event->K_K == SDL_SCANCODE_UP)
+	// {
+	// 	if(worldMap[int(posX + dirX * moveSpeed)][int(posY)] == false) posX += dirX * moveSpeed;
+	// 	if(worldMap[int(posX)][int(posY + dirY * moveSpeed)] == false) posY += dirY * moveSpeed;
+	// }
+	// else if (event->K_K == SDL_SCANCODE_DOWN)
+	// {
+	// 	if(worldMap[int(posX - dirX * moveSpeed)][int(posY)] == false) posX -= dirX * moveSpeed;
+	// 	if(worldMap[int(posX)][int(posY - dirY * moveSpeed)] == false) posY -= dirY * moveSpeed;
+	// }
+	// else if (event->K_K == SDL_SCANCODE_LEFT)
+	// {
+ //      //both camera direction and camera plane must be rotated
+ //      double oldDirX = dirX;
+ //      dirX = dirX * cos(-rotSpeed) - dirY * sin(-rotSpeed);
+ //      dirY = oldDirX * sin(-rotSpeed) + dirY * cos(-rotSpeed);
+ //      double oldPlaneX = planeX;
+ //      planeX = planeX * cos(-rotSpeed) - planeY * sin(-rotSpeed);
+ //      planeY = oldPlaneX * sin(-rotSpeed) + planeY * cos(-rotSpeed);
+	// }
+	// else if (event->K_K == SDL_SCANCODE_RIGHT)
+	// {
+ //      //both camera direction and camera plane must be rotated
+ //      double oldDirX = dirX;
+ //      dirX = dirX * cos(rotSpeed) - dirY * sin(rotSpeed);
+ //      dirY = oldDirX * sin(rotSpeed) + dirY * cos(rotSpeed);
+ //      double oldPlaneX = planeX;
+ //      planeX = planeX * cos(rotSpeed) - planeY * sin(rotSpeed);
+ //      planeY = oldPlaneX * sin(rotSpeed) + planeY * cos(rotSpeed);
+	// }
 }
 
 void	sdl_events(SDL_Event *event, t_app *app)
 {
 	while (SDL_PollEvent(event))
 	{
-		(event->E_TYPE == SDL_KEYDOWN) ? key_events(event, app): 0;
+		(event->E_TYPE == SDL_KEYDOWN) ? key_events(event, app) : 0;
 		(event->E_TYPE == SDL_QUIT) ? exit_message("Done!\n") : 0;
 	}
 }
 
-t_sdl	*get_new_sdl()
+t_sdl	*get_new_sdl(void)
 {
 	t_sdl *sdl;
 
@@ -80,13 +95,12 @@ t_sdl	*get_new_sdl()
 	return (sdl);
 }
 
-
 int		main(int argc, char **argv)
 {
 	SDL_Event	event;
 	t_sdl		*sdl;
 	t_app		app;
-	int			*tmp_arr; 
+	int			*tmp_arr;
 
 	app.sdl = get_new_sdl();
 	sdl = app.sdl;
@@ -99,11 +113,11 @@ int		main(int argc, char **argv)
 		sdl_events(&event, &app);
 
 		tmp_arr = get_pixels_map();
-	    SDL_LockSurface(sdl->sur);
-	    ft_memcpy(sdl->sur->pixels, tmp_arr, sdl->sur->pitch * sdl->sur->h);
-	    ft_memdel((void **)&tmp_arr);
-	    SDL_UnlockSurface(sdl->sur);
-
+		SDL_LockSurface(sdl->sur);
+		ft_memcpy(sdl->sur->pixels, tmp_arr, sdl->sur->pitch * sdl->sur->h);
+		ft_memdel((void **)&tmp_arr);
+		SDL_UnlockSurface(sdl->sur);
+		
 		sdl->text = SDL_CreateTextureFromSurface(sdl->rend, sdl->sur);
 		SDL_RenderCopy(sdl->rend, sdl->text, NULL, NULL);
 		SDL_RenderPresent(sdl->rend);
