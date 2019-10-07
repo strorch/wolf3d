@@ -14,8 +14,8 @@
 # define WOLF_H
 
 # include "../libft/libft.h"
-# define HEIGHT 800
-# define WIDTH 800
+# define SCREEN_H 800
+# define SCREEN_W 800
 
 # include <math.h>
 # include <pwd.h>
@@ -33,21 +33,23 @@
 
 typedef struct	s_vec
 {
-	int			x;
-	int			y;
-	int			z;
+	float		x;
+	float		y;
+	float		z;
 }				t_vec;
 
 typedef struct	s_camera
 {
 	t_vec		dir;
 	t_vec		pos;
+	t_vec		plane;
+	float		mv_speed;
+	float		rot_speed;
 }				t_camera;
 
 typedef struct	s_user
 {
 	t_camera	cam;
-	int			speed;
 }				t_user;
 
 typedef struct	s_map
@@ -68,8 +70,7 @@ typedef struct	s_sdl
 
 typedef struct	s_game
 {
-	t_vec		color;
-	t_user		user;
+	t_user		*user;
 	t_map		map;
 }				t_game;
 
@@ -82,13 +83,12 @@ typedef struct	s_app
 /*
 ** read_map.c
 */
-int				read_map(int argc, char **argv);
+t_map			read_map(int argc, char **argv);
 
 /*
 ** game_main.c
 */
-int				proceed_game(t_app *app_h);
-int				*get_pixels_map();
+int				*get_pixels_map(t_game *game_h);
 
 /*
 ** main.c
@@ -99,5 +99,10 @@ void			exit_message(const char *str);
 ** colors.c
 */
 int				get_hex_color(t_vec c);
+
+/*
+** validation.c
+*/
+int				validate_params(int argc, char **argv);
 
 #endif

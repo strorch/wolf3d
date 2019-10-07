@@ -12,9 +12,9 @@
 
 #include "wolf.h"
 
-int			routine = 24;
+#define ROUTINE 24
 
-const int	worldMap[routine][routine]=
+int	worldMap[ROUTINE][ROUTINE]=
 {
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -49,19 +49,19 @@ t_map		read_map(int argc, char **argv)
 	int			i;
 	int			j;
 
-	key_map = (int **)ft_memalloc(sizeof(int *) * routine);
+	key_map = (int **)ft_memalloc(sizeof(int *) * ROUTINE);
 	i = -1;
-	while (++i < routine)
+	while (++i < ROUTINE)
 	{
-		key_map[i] = (int *)ft_memalloc(sizeof(int) * routine);
+		key_map[i] = (int *)ft_memalloc(sizeof(int) * ROUTINE);
 		j = -1;
-		while (++j < routine)
+		while (++j < ROUTINE)
 		{
 			key_map[i][j] = worldMap[i][j];
 		}
 	}
-	map.h = routine;
-	map.w = routine;
+	map.h = ROUTINE;
+	map.w = ROUTINE;
 	map.keys = key_map;
 	return (map);
 }

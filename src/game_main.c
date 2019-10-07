@@ -19,24 +19,28 @@ void	verLine(int **map_h, int x, int startPoint, int endPoint, int color)
 	map = *map_h;
 	for (int i = startPoint; i < endPoint; i++)
 	{
-		map[800 * i + x] = color;
+		map[SCREEN_H * i + x] = color;
 	}
 }
 
-int		*get_pixels_map()
+int		*get_pixels_map(t_game *game_h)
 {
 	clock_t start, end;
 	double cpu_time_used;
+	t_game game;
+	t_user user;
 
+	game = *game_h;
 	start = clock();
-	int *map = (int *)ft_memalloc(sizeof(int) * 800 * 800);
-	double posX = 22, posY = 12;  //x and y start position
-	double dirX = -1, dirY = 0; //initial direction vector
-	double planeX = 0, planeY = 0.66; //the 2d raycaster version of camera plane
+	int *map = (int *)ft_memalloc(sizeof(int) * SCREEN_W * SCREEN_H);
+	user = *game.user;
+	double posX = user.cam.pos.x, posY = user.cam.pos.y;  //x and y start position
+	double dirX = user.cam.dir.x, dirY = user.cam.dir.y; //initial direction vector
+	double planeX = user.cam.plane.x, planeY = user.cam.plane.y; //the 2d raycaster version of camera plane
 	double time = 0; //time of current frame
 	double oldTime = 0; //time of previous frame
-	int w = 800;
-	int h = 800;
+	int w = SCREEN_W;
+	int h = SCREEN_H;
 
 	for(int x = 0; x < w; x++)
 	{
@@ -97,7 +101,7 @@ int		*get_pixels_map()
 				side = 1;
 			}
 			//Check if ray has hit a wall
-			if (worldMap[mapX][mapY] > 0) hit = 1;
+			if (game.map.keys[mapX][mapY] > 0) hit = 1;
 		}
 		//Calculate distance projected on camera direction (Euclidean distance will give fisheye effect!)
 		if (side == 0) perpWallDist = (mapX - posX + (1 - stepX) / 2) / rayDirX;
@@ -114,7 +118,7 @@ int		*get_pixels_map()
 
 		//choose wall color
 		int color;
-		switch(worldMap[mapX][mapY])
+		switch(game.map.keys[mapX][mapY])
 		{
 			case 1:  color = 0xff0000;  break; //red
 			case 2:  color = 0x00ff00;  break; //green
@@ -139,17 +143,10 @@ int		*get_pixels_map()
 */
 	double moveSpeed = cpu_time_used * 5.0; //the constant value is in squares/second
 	double rotSpeed = cpu_time_used * 3.0; //the constant value is in radians/second
+	user.cam.mv_speed = moveSpeed;
+	user.cam.rot_speed = rotSpeed;
 
 	printf("%f\n", cpu_time_used);
 
 	return map;
-}
-
-
-int		proceed_game(t_app *app_h)
-{
-	t_app app;
-
-	app = *app_h;
-	return (0);
 }
