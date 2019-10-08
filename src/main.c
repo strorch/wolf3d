@@ -31,16 +31,16 @@ void	key_events(SDL_Event *event, t_app *app)
 	(event->K_K == SDL_SCANCODE_ESCAPE) ? exit_message("Done!\n") : 0;
 
 	// (event->K_K == SDL_SCANCODE_DOWN)	? (app->game.user.cam.pos. += 5) : 0;
-	// if (event->K_K == SDL_SCANCODE_UP)
-	// {
-	// 	if(worldMap[int(posX + dirX * moveSpeed)][int(posY)] == false) posX += dirX * moveSpeed;
-	// 	if(worldMap[int(posX)][int(posY + dirY * moveSpeed)] == false) posY += dirY * moveSpeed;
-	// }
-	// else if (event->K_K == SDL_SCANCODE_DOWN)
-	// {
-	// 	if(worldMap[int(posX - dirX * moveSpeed)][int(posY)] == false) posX -= dirX * moveSpeed;
-	// 	if(worldMap[int(posX)][int(posY - dirY * moveSpeed)] == false) posY -= dirY * moveSpeed;
-	// }
+	if (event->K_K == SDL_SCANCODE_UP)
+	{
+		if(map.keys[int(posX + dirX * moveSpeed)][int(posY)] == false) posX += dirX * moveSpeed;
+		if(map.keys[int(posX)][int(posY + dirY * moveSpeed)] == false) posY += dirY * moveSpeed;
+	}
+	else if (event->K_K == SDL_SCANCODE_DOWN)
+	{
+		if(worldMap[int(posX - dirX * moveSpeed)][int(posY)] == false) posX -= dirX * moveSpeed;
+		if(worldMap[int(posX)][int(posY - dirY * moveSpeed)] == false) posY -= dirY * moveSpeed;
+	}
 	// else if (event->K_K == SDL_SCANCODE_LEFT)
 	// {
  //      //both camera direction and camera plane must be rotated
