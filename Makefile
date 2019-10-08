@@ -40,7 +40,7 @@ SOURCES			= \
 					colors.c
 
 ifeq ($(DESKTOP_SESSION),ubuntu)
-    INCLUDES	+=	`sdl2-config --cflags --libs` -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf
+    INCLUDES	+=	`sdl2-config --cflags --libs` -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf -lm -ldl
 else
 	INCLUDES	=	-I$(FRAMEWORKS_DIR)SDL2.framework/Headers/
 	INCLUDES	+=  -I$(FRAMEWORKS_DIR)SDL2_image.framework/Headers/

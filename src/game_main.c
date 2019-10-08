@@ -11,15 +11,27 @@
 /* ************************************************************************** */
 
 #include "wolf.h"
+# include "math.h"
 
 void	verLine(int **map_h, int x, int startPoint, int endPoint, int color)
 {
 	int *map;
 
+	/**
+	TODO: fix segf
+	*/
 	map = *map_h;
+	for (int i = 0; i < startPoint; i++)
+	{
+		map[SCREEN_H * i + x] = 0xF6F6F6;
+	}
 	for (int i = startPoint; i < endPoint; i++)
 	{
 		map[SCREEN_H * i + x] = color;
+	}
+	for (int i = endPoint; i < SCREEN_W; i++)
+	{
+		map[SCREEN_H * i + x] = 0x804040;
 	}
 }
 
@@ -34,7 +46,9 @@ int		*get_pixels_map(t_game *game_h)
 	start = clock();
 	int *map = (int *)ft_memalloc(sizeof(int) * SCREEN_W * SCREEN_H);
 	user = *game.user;
+
 	double posX = user.cam.pos.x, posY = user.cam.pos.y;  //x and y start position
+	// printf("%f %f\n", posX, posY);
 	double dirX = user.cam.dir.x, dirY = user.cam.dir.y; //initial direction vector
 	double planeX = user.cam.plane.x, planeY = user.cam.plane.y; //the 2d raycaster version of camera plane
 	double time = 0; //time of current frame
@@ -138,15 +152,11 @@ int		*get_pixels_map(t_game *game_h)
 /*
     double frameTime = (time - oldTime) / 1000.0; //frameTime is the time this frame has taken, in seconds
     print(1.0 / frameTime); //FPS counter
-    redraw();
-    cls();
 */
 	double moveSpeed = cpu_time_used * 5.0; //the constant value is in squares/second
 	double rotSpeed = cpu_time_used * 3.0; //the constant value is in radians/second
-	user.cam.mv_speed = moveSpeed;
-	user.cam.rot_speed = rotSpeed;
-
-	printf("%f\n", cpu_time_used);
+	game.user->cam.mv_speed = moveSpeed;
+	game.user->cam.rot_speed = rotSpeed;
 
 	return map;
 }

@@ -23,44 +23,44 @@ void	exit_message(const char *str)
 
 void	key_events(SDL_Event *event, t_app *app)
 {
-	t_map	map;
-	t_user	user;
+	t_map		map;
+	t_camera	c;
+	t_vec		d;
+	t_vec		p;
+	t_vec		pl;
 
 	map = (*app).game->map;
-	user = *(*app).game->user;
+	c = (*app).game->user->cam;
+	d = c.dir;
+	p = c.pos;
+	pl = c.plane;
 	(event->K_K == SDL_SCANCODE_ESCAPE) ? exit_message("Done!\n") : 0;
-
-	// (event->K_K == SDL_SCANCODE_DOWN)	? (app->game.user.cam.pos. += 5) : 0;
 	if (event->K_K == SDL_SCANCODE_UP)
 	{
-		if(map.keys[int(posX + dirX * moveSpeed)][int(posY)] == false) posX += dirX * moveSpeed;
-		if(map.keys[int(posX)][int(posY + dirY * moveSpeed)] == false) posY += dirY * moveSpeed;
+		if(map.keys[(int)(p.x + d.x * c.mv_speed)][(int)p.y] == 0) (*app).game->user->cam.pos.x += d.x * c.mv_speed;
+		if(map.keys[(int)p.x][(int)(p.y + d.y * c.mv_speed)] == 0) (*app).game->user->cam.pos.y += d.y * c.mv_speed;
+		printf("%f %f\n", (*app).game->user->cam.pos.x, (*app).game->user->cam.pos.y);
 	}
 	else if (event->K_K == SDL_SCANCODE_DOWN)
 	{
-		if(worldMap[int(posX - dirX * moveSpeed)][int(posY)] == false) posX -= dirX * moveSpeed;
-		if(worldMap[int(posX)][int(posY - dirY * moveSpeed)] == false) posY -= dirY * moveSpeed;
+		if(map.keys[(int)(p.x + d.x * c.mv_speed)][(int)p.y] == 0) (*app).game->user->cam.pos.x -= d.x * c.mv_speed;
+		if(map.keys[(int)p.x][(int)(p.y + d.y * c.mv_speed)] == 0) (*app).game->user->cam.pos.y -= d.y * c.mv_speed;
+		printf("%f %f\n", (*app).game->user->cam.pos.x, (*app).game->user->cam.pos.y);
 	}
-	// else if (event->K_K == SDL_SCANCODE_LEFT)
-	// {
- //      //both camera direction and camera plane must be rotated
- //      double oldDirX = dirX;
- //      dirX = dirX * cos(-rotSpeed) - dirY * sin(-rotSpeed);
- //      dirY = oldDirX * sin(-rotSpeed) + dirY * cos(-rotSpeed);
- //      double oldPlaneX = planeX;
- //      planeX = planeX * cos(-rotSpeed) - planeY * sin(-rotSpeed);
- //      planeY = oldPlaneX * sin(-rotSpeed) + planeY * cos(-rotSpeed);
-	// }
-	// else if (event->K_K == SDL_SCANCODE_RIGHT)
-	// {
- //      //both camera direction and camera plane must be rotated
- //      double oldDirX = dirX;
- //      dirX = dirX * cos(rotSpeed) - dirY * sin(rotSpeed);
- //      dirY = oldDirX * sin(rotSpeed) + dirY * cos(rotSpeed);
- //      double oldPlaneX = planeX;
- //      planeX = planeX * cos(rotSpeed) - planeY * sin(rotSpeed);
- //      planeY = oldPlaneX * sin(rotSpeed) + planeY * cos(rotSpeed);
-	// }
+	else if (event->K_K == SDL_SCANCODE_RIGHT)
+	{
+		(*app).game->user->cam.dir.x = d.x * cos(-c.rot_speed) - d.y * sin(-c.rot_speed);
+		(*app).game->user->cam.dir.y = d.x * sin(-c.rot_speed) + d.y * cos(-c.rot_speed);
+		(*app).game->user->cam.plane.x = pl.x * cos(-c.rot_speed) - pl.y * sin(-c.rot_speed);
+		(*app).game->user->cam.plane.y = pl.x * sin(-c.rot_speed) + pl.y * cos(-c.rot_speed);
+	}
+	else if (event->K_K == SDL_SCANCODE_LEFT)
+	{
+		(*app).game->user->cam.dir.x = d.x * cos(c.rot_speed) - d.y * sin(c.rot_speed);
+		(*app).game->user->cam.dir.y = d.x * sin(c.rot_speed) + d.y * cos(c.rot_speed);
+		(*app).game->user->cam.plane.x = pl.x * cos(c.rot_speed) - pl.y * sin(c.rot_speed);
+		(*app).game->user->cam.plane.y = pl.x * sin(c.rot_speed) + pl.y * cos(c.rot_speed);
+	}
 }
 
 void	sdl_events(SDL_Event *event, t_app *app)
