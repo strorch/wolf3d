@@ -39,13 +39,11 @@ void	key_events(SDL_Event *event, t_app *app)
 	{
 		if(map.keys[(int)(p.x + d.x * c.mv_speed)][(int)p.y] == 0) (*app).game->user->cam.pos.x += d.x * c.mv_speed;
 		if(map.keys[(int)p.x][(int)(p.y + d.y * c.mv_speed)] == 0) (*app).game->user->cam.pos.y += d.y * c.mv_speed;
-		printf("%f %f\n", (*app).game->user->cam.pos.x, (*app).game->user->cam.pos.y);
 	}
 	else if (event->K_K == SDL_SCANCODE_DOWN)
 	{
 		if(map.keys[(int)(p.x + d.x * c.mv_speed)][(int)p.y] == 0) (*app).game->user->cam.pos.x -= d.x * c.mv_speed;
 		if(map.keys[(int)p.x][(int)(p.y + d.y * c.mv_speed)] == 0) (*app).game->user->cam.pos.y -= d.y * c.mv_speed;
-		printf("%f %f\n", (*app).game->user->cam.pos.x, (*app).game->user->cam.pos.y);
 	}
 	else if (event->K_K == SDL_SCANCODE_RIGHT)
 	{

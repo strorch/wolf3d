@@ -130,6 +130,10 @@ int		*get_pixels_map(t_game *game_h)
 		int drawEnd = lineHeight / 2 + h / 2;
 		if(drawEnd >= h)drawEnd = h - 1;
 
+
+
+
+
 		//choose wall color
 		int color;
 		switch(game.map.keys[mapX][mapY])
