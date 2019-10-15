@@ -28,7 +28,11 @@ void	key_events(SDL_Event *event, t_app *app)
 	t_vec		d;
 	t_vec		p;
 	t_vec		pl;
+	float			posX;
+	float			posY;
 
+	posX = (*app).game->user->cam.pos.x;
+	posY = (*app).game->user->cam.pos.y;
 	map = (*app).game->map;
 	c = (*app).game->user->cam;
 	d = c.dir;
@@ -37,13 +41,15 @@ void	key_events(SDL_Event *event, t_app *app)
 	(event->K_K == SDL_SCANCODE_ESCAPE) ? exit_message("Done!\n") : 0;
 	if (event->K_K == SDL_SCANCODE_UP)
 	{
-		if(map.keys[(int)(p.x + d.x * c.mv_speed)][(int)p.y] == 0) (*app).game->user->cam.pos.x += d.x * c.mv_speed;
-		if(map.keys[(int)p.x][(int)(p.y + d.y * c.mv_speed)] == 0) (*app).game->user->cam.pos.y += d.y * c.mv_speed;
+		printf("%i %i map:%i\n", (int)(p.x + d.x * c.mv_speed), (int)p.y, map.keys[(int)(p.x + d.x * c.mv_speed)][(int)p.y]);
+		if(map.keys[(int)(p.x + d.x * c.mv_speed)][(int)p.y] == 0) posX += d.x * c.mv_speed;
+		if(map.keys[(int)p.x][(int)(p.y + d.y * c.mv_speed)] == 0) posY += d.y * c.mv_speed;
 	}
 	else if (event->K_K == SDL_SCANCODE_DOWN)
 	{
-		if(map.keys[(int)(p.x + d.x * c.mv_speed)][(int)p.y] == 0) (*app).game->user->cam.pos.x -= d.x * c.mv_speed;
-		if(map.keys[(int)p.x][(int)(p.y + d.y * c.mv_speed)] == 0) (*app).game->user->cam.pos.y -= d.y * c.mv_speed;
+		printf("%i %i map:%i\n", (int)(p.x + d.x * c.mv_speed), (int)p.y, map.keys[(int)(p.x + d.x * c.mv_speed)][(int)p.y]);
+		if(map.keys[(int)(p.x + d.x * c.mv_speed)][(int)p.y] == 0) posX -= d.x * c.mv_speed;
+		if(map.keys[(int)p.x][(int)(p.y + d.y * c.mv_speed)] == 0) posY -= d.y * c.mv_speed;
 	}
 	else if (event->K_K == SDL_SCANCODE_RIGHT)
 	{
@@ -58,6 +64,12 @@ void	key_events(SDL_Event *event, t_app *app)
 		(*app).game->user->cam.dir.y = d.x * sin(c.rot_speed) + d.y * cos(c.rot_speed);
 		(*app).game->user->cam.plane.x = pl.x * cos(c.rot_speed) - pl.y * sin(c.rot_speed);
 		(*app).game->user->cam.plane.y = pl.x * sin(c.rot_speed) + pl.y * cos(c.rot_speed);
+	}
+	if (posX > 0 && posX < 23) {
+		(*app).game->user->cam.pos.x = posX;
+	}
+	if (posY > 0 &&posY < 23) {
+		(*app).game->user->cam.pos.y = posY;
 	}
 }
 
@@ -100,8 +112,8 @@ void	init_user(t_user **user_h)
 	user = *user_h;
 	dir.x = -1;
 	dir.y = 0;
-	pos.x = 22;
-	pos.y = 12;
+	pos.x = 6.0;
+	pos.y = 2;
 	plane.x = 0;
 	plane.y = 0.66;
 	user->cam.dir = dir;
@@ -128,6 +140,7 @@ int		main(int argc, char **argv)
 		sdl_events(&event, &app);
 
 		tmp_arr = get_pixels_map(app.game);
+
 		SDL_LockSurface(sdl->sur);
 		ft_memcpy(sdl->sur->pixels, tmp_arr, sdl->sur->pitch * sdl->sur->h);
 		ft_memdel((void **)&tmp_arr);

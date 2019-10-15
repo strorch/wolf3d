@@ -157,8 +157,8 @@ int		*get_pixels_map(t_game *game_h)
     double frameTime = (time - oldTime) / 1000.0; //frameTime is the time this frame has taken, in seconds
     print(1.0 / frameTime); //FPS counter
 */
-	double moveSpeed = cpu_time_used * 5.0; //the constant value is in squares/second
-	double rotSpeed = cpu_time_used * 3.0; //the constant value is in radians/second
+	double moveSpeed = cpu_time_used * 9.0; //the constant value is in squares/second
+	double rotSpeed = cpu_time_used * 5.0; //the constant value is in radians/second
 	game.user->cam.mv_speed = moveSpeed;
 	game.user->cam.rot_speed = rotSpeed;
 
