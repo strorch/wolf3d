@@ -24,7 +24,7 @@
 NAME = wolf3d
 
 CC = gcc
-#CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror
 #CFLAGS += -g
 
 FRAMEWORKS_DIR	= ./frameworks/

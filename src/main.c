@@ -12,6 +12,9 @@
 
 #include "wolf.h"
 
+#define texWidth 64
+#define texHeight 64
+
 #define K_K key.keysym.scancode
 #define E_TYPE type
 
@@ -125,6 +128,33 @@ void	init_user(t_user **user_h)
 	user->cam.plane = plane;
 }
 
+int		**get_textures()
+{
+	int **texture = (int **)ft_memalloc(sizeof(int *) * 8);
+	for (int i = 0; i < 8; i++) {
+		texture[i] = (int *)ft_memalloc(sizeof(int) * texWidth * texHeight);
+	}
+
+	//generate some textures
+	for(int x = 0; x < texWidth; x++)
+		for(int y = 0; y < texHeight; y++)
+		{
+			int xorcolor = (x * 256 / texWidth) ^ (y * 256 / texHeight);
+			//int xcolor = x * 256 / texWidth;
+			int ycolor = y * 256 / texHeight;
+			int xycolor = y * 128 / texHeight + x * 128 / texWidth;
+			texture[0][texWidth * y + x] = 65536 * 254 * (x != y && x != texWidth - y); //flat red texture with black cross
+			texture[1][texWidth * y + x] = xycolor + 256 * xycolor + 65536 * xycolor; //sloped greyscale
+			texture[2][texWidth * y + x] = 256 * xycolor + 65536 * xycolor; //sloped yellow gradient
+			texture[3][texWidth * y + x] = xorcolor + 256 * xorcolor + 65536 * xorcolor; //xor greyscale
+			texture[4][texWidth * y + x] = 256 * xorcolor; //xor green
+			texture[5][texWidth * y + x] = 65536 * 192 * (x % 16 && y % 16); //red bricks
+			texture[6][texWidth * y + x] = 65536 * ycolor; //red gradient
+			texture[7][texWidth * y + x] = 128 + 256 * 128 + 65536 * 128; //flat grey texture
+		}
+	return texture;
+}
+
 int		main(int argc, char **argv)
 {
 	SDL_Event	event;
@@ -138,6 +168,7 @@ int		main(int argc, char **argv)
 	app.game = (t_game *)ft_memalloc(sizeof(t_game));
 	app.game->map = read_map(argc, argv);
 	app.game->user = (t_user *)ft_memalloc(sizeof(t_user));
+	app.game->text = get_textures();
 	init_user(&app.game->user);
 	while (1)
 	{

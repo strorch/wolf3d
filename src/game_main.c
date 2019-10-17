@@ -37,36 +37,8 @@ void	verLine(int **map_h, int x, int startPoint, int endPoint, int color)
 	}
 }
 
-int		**get_textures()
-{
-	int **texture = (int **)ft_memalloc(sizeof(int *) * 8);
-	for (int i = 0; i < 8; i++) {
-		texture[i] = (int *)ft_memalloc(sizeof(int) * texWidth * texHeight);
-	}
-
-	//generate some textures
-	for(int x = 0; x < texWidth; x++)
-		for(int y = 0; y < texHeight; y++)
-		{
-			int xorcolor = (x * 256 / texWidth) ^ (y * 256 / texHeight);
-			//int xcolor = x * 256 / texWidth;
-			int ycolor = y * 256 / texHeight;
-			int xycolor = y * 128 / texHeight + x * 128 / texWidth;
-			texture[0][texWidth * y + x] = 65536 * 254 * (x != y && x != texWidth - y); //flat red texture with black cross
-			texture[1][texWidth * y + x] = xycolor + 256 * xycolor + 65536 * xycolor; //sloped greyscale
-			texture[2][texWidth * y + x] = 256 * xycolor + 65536 * xycolor; //sloped yellow gradient
-			texture[3][texWidth * y + x] = xorcolor + 256 * xorcolor + 65536 * xorcolor; //xor greyscale
-			texture[4][texWidth * y + x] = 256 * xorcolor; //xor green
-			texture[5][texWidth * y + x] = 65536 * 192 * (x % 16 && y % 16); //red bricks
-			texture[6][texWidth * y + x] = 65536 * ycolor; //red gradient
-			texture[7][texWidth * y + x] = 128 + 256 * 128 + 65536 * 128; //flat grey texture
-		}
-	return texture;
-}
-
 int		*get_pixels_map(t_game *game_h)
 {
-	int **texture = get_textures();
 	clock_t start, end;
 	double cpu_time_used;
 	t_game game;
@@ -81,8 +53,8 @@ int		*get_pixels_map(t_game *game_h)
 	// printf("%f %f\n", posX, posY);
 	double dirX = user.cam.dir.x, dirY = user.cam.dir.y; //initial direction vector
 	double planeX = user.cam.plane.x, planeY = user.cam.plane.y; //the 2d raycaster version of camera plane
-	double time = 0; //time of current frame
-	double oldTime = 0; //time of previous frame
+	// double time = 0; //time of current frame
+	// double oldTime = 0; //time of previous frame
 	int w = SCREEN_W;
 	int h = SCREEN_H;
 
@@ -160,27 +132,60 @@ int		*get_pixels_map(t_game *game_h)
 		int drawEnd = lineHeight / 2 + h / 2;
 		if(drawEnd >= h)drawEnd = h - 1;
 
-
-
-
-
 		//choose wall color
-		int color;
-		switch(game.map.keys[mapX][mapY])
+		// int color;
+		// switch(game.map.keys[mapX][mapY])
+		// {
+		// 	case 1:  color = 0xff0000;  break; //red
+		// 	case 2:  color = 0x00ff00;  break; //green
+		// 	case 3:  color = 0x0000ff;  break; //blue
+		// 	case 4:  color = 0xffff00;  break; //white
+		// 	default: color = 0x00ffff;  break; //yellow
+		// }
+
+		// //give x and y sides different brightness
+		// if (side == 1) {color = color / 2;}
+
+		// //draw the pixels of the stripe as a vertical line
+		// verLine(&map, x, drawStart, drawEnd, color);
+
+		//texturing calculations
+		int texNum = game.map.keys[mapX][mapY] - 1; //1 subtracted from it so that texture 0 can be used!
+
+		//calculate value of wallX
+		double wallX; //where exactly the wall was hit
+		if (side == 0) wallX = posY + perpWallDist * rayDirY;
+		else           wallX = posX + perpWallDist * rayDirX;
+		wallX -= floor((wallX));
+
+		//x coordinate on the texture
+		int texX = (int)(wallX * (double)texWidth);
+		if(side == 0 && rayDirX > 0) texX = texWidth - texX - 1;
+		if(side == 1 && rayDirY < 0) texX = texWidth - texX - 1;
+
+		for(int y = drawStart; y < drawEnd; y++)
 		{
-			case 1:  color = 0xff0000;  break; //red
-			case 2:  color = 0x00ff00;  break; //green
-			case 3:  color = 0x0000ff;  break; //blue
-			case 4:  color = 0xffff00;  break; //white
-			default: color = 0x00ffff;  break; //yellow
+			int d = y * 256 - h * 128 + lineHeight * 128;  //256 and 128 factors to avoid floats
+			// TODO: avoid the division to speed this up
+			int texY = ((d * texHeight) / lineHeight) / 256;
+			Uint32 color = game.text[texNum][texHeight * texY + texX];
+			//make color darker for y-sides: R, G and B byte each divided through two with a "shift" and an "and"
+			if(side == 1) color = (color >> 1) & 8355711;
+			map[SCREEN_H * y + x] = color;
+			// buffer[y][x] = color;
 		}
-
-		//give x and y sides different brightness
-		if (side == 1) {color = color / 2;}
-
-		//draw the pixels of the stripe as a vertical line
-		verLine(&map, x, drawStart, drawEnd, color);
 	}
+
+
+    // drawBuffer(buffer[0]);
+    // for(int x = 0; x < w; x++) for(int y = 0; y < h; y++) buffer[y][x] = 0; //clear the buffer instead of cls()
+    //timing for input and FPS counter
+
+
+
+
+
+
 	end = clock();
 	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 /*

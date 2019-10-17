@@ -51,6 +51,8 @@ t_map		read_map(int argc, char **argv)
 	int			i;
 	int			j;
 
+	(void)argc;
+	(void)argv;
 	key_map = (int **)ft_memalloc(sizeof(int *) * H);
 	i = -1;
 	while (++i < H)

@@ -72,6 +72,7 @@ typedef struct	s_game
 {
 	t_user		*user;
 	t_map		map;
+	int			**text;
 }				t_game;
 
 typedef struct	s_app
