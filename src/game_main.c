@@ -132,23 +132,6 @@ int		*get_pixels_map(t_game *game_h)
 		int drawEnd = lineHeight / 2 + h / 2;
 		if(drawEnd >= h)drawEnd = h - 1;
 
-		//choose wall color
-		// int color;
-		// switch(game.map.keys[mapX][mapY])
-		// {
-		// 	case 1:  color = 0xff0000;  break; //red
-		// 	case 2:  color = 0x00ff00;  break; //green
-		// 	case 3:  color = 0x0000ff;  break; //blue
-		// 	case 4:  color = 0xffff00;  break; //white
-		// 	default: color = 0x00ffff;  break; //yellow
-		// }
-
-		// //give x and y sides different brightness
-		// if (side == 1) {color = color / 2;}
-
-		// //draw the pixels of the stripe as a vertical line
-		// verLine(&map, x, drawStart, drawEnd, color);
-
 		//texturing calculations
 		int texNum = game.map.keys[mapX][mapY] - 1; //1 subtracted from it so that texture 0 can be used!
 
@@ -174,17 +157,58 @@ int		*get_pixels_map(t_game *game_h)
 			map[SCREEN_H * y + x] = color;
 			// buffer[y][x] = color;
 		}
+		//FLOOR CASTING
+		double floorXWall, floorYWall; //x, y position of the floor texel at the bottom of the wall
+
+		//4 different wall directions possible
+		if(side == 0 && rayDirX > 0)
+		{
+			floorXWall = mapX;
+			floorYWall = mapY + wallX;
+		}
+		else if(side == 0 && rayDirX < 0)
+		{
+			floorXWall = mapX + 1.0;
+			floorYWall = mapY + wallX;
+		}
+		else if(side == 1 && rayDirY > 0)
+		{
+			floorXWall = mapX + wallX;
+			floorYWall = mapY;
+		}
+		else
+		{
+			floorXWall = mapX + wallX;
+			floorYWall = mapY + 1.0;
+		}
+
+		double distWall, distPlayer, currentDist;
+
+		distWall = perpWallDist;
+		distPlayer = 0.0;
+
+		if (drawEnd < 0) drawEnd = h; //becomes < 0 when the integer overflows
+
+		//draw the floor from drawEnd to the bottom of the screen
+		for(int y = drawEnd + 1; y < h; y++)
+		{
+			currentDist = h / (2.0 * y - h); //you could make a small lookup table for this instead
+
+			double weight = (currentDist - distPlayer) / (distWall - distPlayer);
+
+			double currentFloorX = weight * floorXWall + (1.0 - weight) * posX;
+			double currentFloorY = weight * floorYWall + (1.0 - weight) * posY;
+
+			int floorTexX, floorTexY;
+			floorTexX = (int)(currentFloorX * texWidth) % texWidth;
+			floorTexY = (int)(currentFloorY * texHeight) % texHeight;
+
+			//floor
+			map[SCREEN_H * y + x] = (game.text[3][texWidth * floorTexY + floorTexX] >> 1) & 8355711;
+			//ceiling (symmetrical!)
+			map[SCREEN_H * (h - y) + x] = game.text[6][texWidth * floorTexY + floorTexX];
+		}
 	}
-
-
-    // drawBuffer(buffer[0]);
-    // for(int x = 0; x < w; x++) for(int y = 0; y < h; y++) buffer[y][x] = 0; //clear the buffer instead of cls()
-    //timing for input and FPS counter
-
-
-
-
-
 
 	end = clock();
 	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
@@ -192,8 +216,8 @@ int		*get_pixels_map(t_game *game_h)
     double frameTime = (time - oldTime) / 1000.0; //frameTime is the time this frame has taken, in seconds
     print(1.0 / frameTime); //FPS counter
 */
-	double moveSpeed = cpu_time_used * 9.0; //the constant value is in squares/second
-	double rotSpeed = cpu_time_used * 5.0; //the constant value is in radians/second
+	double moveSpeed = cpu_time_used * 5.0; //the constant value is in squares/second
+	double rotSpeed = cpu_time_used * 3.0; //the constant value is in radians/second
 	game.user->cam.mv_speed = moveSpeed;
 	game.user->cam.rot_speed = rotSpeed;
 

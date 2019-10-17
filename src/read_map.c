@@ -16,7 +16,7 @@
 #define H 24
 #define W 24
 
-int	worldMap[H][W]=
+int worldMap[H][W]=
 {
   {8,8,8,8,8,8,8,8,8,8,8,4,4,6,4,4,6,4,6,4,4,4,6,4},
   {8,0,0,0,0,0,0,0,0,0,8,4,0,0,0,0,0,0,0,0,0,0,0,4},
@@ -44,28 +44,28 @@ int	worldMap[H][W]=
   {2,2,2,2,1,2,2,2,2,2,2,1,2,2,2,5,5,5,5,5,5,5,5,5}
 };
 
-t_map		read_map(int argc, char **argv)
+t_map   read_map(int argc, char **argv)
 {
-	t_map		map;
-	int			**key_map;
-	int			i;
-	int			j;
+  t_map   map;
+  int     **key_map;
+  int     i;
+  int     j;
 
-	(void)argc;
-	(void)argv;
-	key_map = (int **)ft_memalloc(sizeof(int *) * H);
-	i = -1;
-	while (++i < H)
-	{
-		key_map[i] = (int *)ft_memalloc(sizeof(int) * W);
-		j = -1;
-		while (++j < W)
-		{
-			key_map[i][j] = worldMap[i][j];
-		}
-	}
-	map.h = H;
-	map.w = W;
-	map.keys = key_map;
-	return (map);
+  (void)argc;
+  (void)argv;
+  key_map = (int **)ft_memalloc(sizeof(int *) * H);
+  i = -1;
+  while (++i < H)
+  {
+    key_map[i] = (int *)ft_memalloc(sizeof(int) * W);
+    j = -1;
+    while (++j < W)
+    {
+      key_map[i][j] = worldMap[i][j];
+    }
+  }
+  map.h = H;
+  map.w = W;
+  map.keys = key_map;
+  return (map);
 }
