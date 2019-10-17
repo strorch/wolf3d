@@ -15,28 +15,6 @@
 #define texWidth 64
 #define texHeight 64
 
-void	verLine(int **map_h, int x, int startPoint, int endPoint, int color)
-{
-	int *map;
-
-	/**
-	TODO: fix segf
-	*/
-	map = *map_h;
-	for (int i = 0; i < startPoint; i++)
-	{
-		map[SCREEN_H * i + x] = 0xF6F6F6;
-	}
-	for (int i = startPoint; i < endPoint; i++)
-	{
-		map[SCREEN_H * i + x] = color;
-	}
-	for (int i = endPoint; i < SCREEN_W; i++)
-	{
-		map[SCREEN_H * i + x] = 0x804040;
-	}
-}
-
 int		*get_pixels_map(t_game *game_h)
 {
 	clock_t start, end;
@@ -216,10 +194,8 @@ int		*get_pixels_map(t_game *game_h)
     double frameTime = (time - oldTime) / 1000.0; //frameTime is the time this frame has taken, in seconds
     print(1.0 / frameTime); //FPS counter
 */
-	double moveSpeed = cpu_time_used * 5.0; //the constant value is in squares/second
-	double rotSpeed = cpu_time_used * 3.0; //the constant value is in radians/second
-	game.user->cam.mv_speed = moveSpeed;
-	game.user->cam.rot_speed = rotSpeed;
+	game.user->cam.mv_speed = cpu_time_used * 5.0;
+	game.user->cam.rot_speed = cpu_time_used * 3.0;
 
 	return map;
 }

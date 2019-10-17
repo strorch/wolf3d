@@ -41,20 +41,17 @@ void	key_events(SDL_Event *event, t_app *app)
 	d = c.dir;
 	p = c.pos;
 	pl = c.plane;
-	// printf("%f\n", c.mv_speed);
 
 	(event->K_K == SDL_SCANCODE_ESCAPE) ? exit_message("Done!\n") : 0;
 	if (event->K_K == SDL_SCANCODE_UP)
 	{
 		double	w = 0.25;
-		// printf("/%i %i map:%i\n", (int)(p.x + d.x * c.mv_speed), (int)p.y, map.keys[(int)(p.x + d.x * c.mv_speed)][(int)p.y]);
 		if(map.keys[(int)(p.x + d.x * (c.mv_speed + w))][(int)p.y - (int)(d.y * w)] == 0) posX += d.x * c.mv_speed;
 		if(map.keys[(int)p.x - (int)(d.x * w)][(int)(p.y + d.y * (c.mv_speed + w))] == 0) posY += d.y * c.mv_speed;
 	}
 	else if (event->K_K == SDL_SCANCODE_DOWN)
 	{
 		double	w = -0.25;
-		// printf("%i %i map:%i\n", (int)(p.x + d.x * c.mv_speed), (int)p.y, map.keys[(int)(p.x + d.x * c.mv_speed)][(int)p.y]);
 		if(map.keys[(int)(p.x + d.x * (c.mv_speed + w))][(int)p.y - (int)(d.y * w)] == 0) posX -= d.x * c.mv_speed;
 		if(map.keys[(int)p.x - (int)(d.x * w)][(int)(p.y + d.y * (c.mv_speed + w))] == 0) posY -= d.y * c.mv_speed;
 	}
@@ -72,12 +69,8 @@ void	key_events(SDL_Event *event, t_app *app)
 		(*app).game->user->cam.plane.x = pl.x * cos(c.rot_speed) - pl.y * sin(c.rot_speed);
 		(*app).game->user->cam.plane.y = pl.x * sin(c.rot_speed) + pl.y * cos(c.rot_speed);
 	}
-	// if (posX > 0 && posX < 23) {
-		(*app).game->user->cam.pos.x = posX;
-	// }
-	// if (posY > 0 &&posY < 23) {
-		(*app).game->user->cam.pos.y = posY;
-	// }
+	(*app).game->user->cam.pos.x = posX;
+	(*app).game->user->cam.pos.y = posY;
 }
 
 void	sdl_events(SDL_Event *event, t_app *app)
@@ -135,32 +128,29 @@ int		**get_textures()
 		texture[i] = (int *)ft_memalloc(sizeof(int) * texWidth * texHeight);
 	}
 
-	//generate some textures
 	for(int x = 0; x < texWidth; x++)
 		for(int y = 0; y < texHeight; y++)
 		{
 			int xorcolor = (x * 256 / texWidth) ^ (y * 256 / texHeight);
-			//int xcolor = x * 256 / texWidth;
 			int ycolor = y * 256 / texHeight;
 			int xycolor = y * 128 / texHeight + x * 128 / texWidth;
-			texture[0][texWidth * y + x] = 65536 * 254 * (x != y && x != texWidth - y); //flat red texture with black cross
-			texture[1][texWidth * y + x] = xycolor + 256 * xycolor + 65536 * xycolor; //sloped greyscale
-			texture[2][texWidth * y + x] = 256 * xycolor + 65536 * xycolor; //sloped yellow gradient
-			texture[3][texWidth * y + x] = xorcolor + 256 * xorcolor + 65536 * xorcolor; //xor greyscale
-			texture[4][texWidth * y + x] = 256 * xorcolor; //xor green
-			texture[5][texWidth * y + x] = 65536 * 192 * (x % 16 && y % 16); //red bricks
-			texture[6][texWidth * y + x] = 65536 * ycolor; //red gradient
-			texture[7][texWidth * y + x] = 128 + 256 * 128 + 65536 * 128; //flat grey texture
+			texture[0][texWidth * y + x] = 65536 * 254 * (x != y && x != texWidth - y);
+			texture[1][texWidth * y + x] = xycolor + 256 * xycolor + 65536 * xycolor;
+			texture[2][texWidth * y + x] = 256 * xycolor + 65536 * xycolor;
+			texture[3][texWidth * y + x] = xorcolor + 256 * xorcolor + 65536 * xorcolor;
+			texture[4][texWidth * y + x] = 256 * xorcolor;
+			texture[5][texWidth * y + x] = 65536 * 192 * (x % 16 && y % 16);
+			texture[6][texWidth * y + x] = 65536 * ycolor;
+			texture[7][texWidth * y + x] = 128 + 256 * 128 + 65536 * 128;
 		}
 	return texture;
 }
 
-int		main(int argc, char **argv)
+int		main1(int argc, char **argv)
 {
 	SDL_Event	event;
 	t_sdl		*sdl;
 	t_app		app;
-	t_user		user;
 	int			*tmp_arr;
 
 	app.sdl = init_sdl();
@@ -185,9 +175,21 @@ int		main(int argc, char **argv)
 		SDL_RenderCopy(sdl->rend, sdl->text, NULL, NULL);
 		SDL_RenderPresent(sdl->rend);
 		SDL_DestroyTexture(sdl->text);
-		// break;
 	}
 	TTF_Quit();
 	SDL_Quit();
 	return (0);
+}
+
+int main(int argc, char **argv)
+{
+	t_map m = read_map(argc, argv);
+
+	for (int i = 0; i < m.h; i++)
+	{
+		for (int j = 0; j < m.w; j++)
+			printf("%d ", m.keys[i][j]);
+		printf("\n");
+	}
+	return 0;
 }
