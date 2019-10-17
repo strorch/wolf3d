@@ -38,18 +38,22 @@ void	key_events(SDL_Event *event, t_app *app)
 	d = c.dir;
 	p = c.pos;
 	pl = c.plane;
+	// printf("%f\n", c.mv_speed);
+
 	(event->K_K == SDL_SCANCODE_ESCAPE) ? exit_message("Done!\n") : 0;
 	if (event->K_K == SDL_SCANCODE_UP)
 	{
-		printf("%i %i map:%i\n", (int)(p.x + d.x * c.mv_speed), (int)p.y, map.keys[(int)(p.x + d.x * c.mv_speed)][(int)p.y]);
-		if(map.keys[(int)(p.x + d.x * c.mv_speed)][(int)p.y] == 0) posX += d.x * c.mv_speed;
-		if(map.keys[(int)p.x][(int)(p.y + d.y * c.mv_speed)] == 0) posY += d.y * c.mv_speed;
+		double	w = 0.25;
+		// printf("/%i %i map:%i\n", (int)(p.x + d.x * c.mv_speed), (int)p.y, map.keys[(int)(p.x + d.x * c.mv_speed)][(int)p.y]);
+		if(map.keys[(int)(p.x + d.x * (c.mv_speed + w))][(int)p.y - (int)(d.y * w)] == 0) posX += d.x * c.mv_speed;
+		if(map.keys[(int)p.x - (int)(d.x * w)][(int)(p.y + d.y * (c.mv_speed + w))] == 0) posY += d.y * c.mv_speed;
 	}
 	else if (event->K_K == SDL_SCANCODE_DOWN)
 	{
-		printf("%i %i map:%i\n", (int)(p.x + d.x * c.mv_speed), (int)p.y, map.keys[(int)(p.x + d.x * c.mv_speed)][(int)p.y]);
-		if(map.keys[(int)(p.x + d.x * c.mv_speed)][(int)p.y] == 0) posX -= d.x * c.mv_speed;
-		if(map.keys[(int)p.x][(int)(p.y + d.y * c.mv_speed)] == 0) posY -= d.y * c.mv_speed;
+		double	w = -0.25;
+		// printf("%i %i map:%i\n", (int)(p.x + d.x * c.mv_speed), (int)p.y, map.keys[(int)(p.x + d.x * c.mv_speed)][(int)p.y]);
+		if(map.keys[(int)(p.x + d.x * (c.mv_speed + w))][(int)p.y - (int)(d.y * w)] == 0) posX -= d.x * c.mv_speed;
+		if(map.keys[(int)p.x - (int)(d.x * w)][(int)(p.y + d.y * (c.mv_speed + w))] == 0) posY -= d.y * c.mv_speed;
 	}
 	else if (event->K_K == SDL_SCANCODE_RIGHT)
 	{
@@ -65,12 +69,12 @@ void	key_events(SDL_Event *event, t_app *app)
 		(*app).game->user->cam.plane.x = pl.x * cos(c.rot_speed) - pl.y * sin(c.rot_speed);
 		(*app).game->user->cam.plane.y = pl.x * sin(c.rot_speed) + pl.y * cos(c.rot_speed);
 	}
-	if (posX > 0 && posX < 23) {
+	// if (posX > 0 && posX < 23) {
 		(*app).game->user->cam.pos.x = posX;
-	}
-	if (posY > 0 &&posY < 23) {
+	// }
+	// if (posY > 0 &&posY < 23) {
 		(*app).game->user->cam.pos.y = posY;
-	}
+	// }
 }
 
 void	sdl_events(SDL_Event *event, t_app *app)
@@ -112,8 +116,8 @@ void	init_user(t_user **user_h)
 	user = *user_h;
 	dir.x = -1;
 	dir.y = 0;
-	pos.x = 6.0;
-	pos.y = 2;
+	pos.x = 22.0;
+	pos.y = 11.5;
 	plane.x = 0;
 	plane.y = 0.66;
 	user->cam.dir = dir;
