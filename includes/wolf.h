@@ -71,7 +71,7 @@ typedef struct	s_sdl
 typedef struct	s_game
 {
 	t_user		*user;
-	t_map		map;
+	t_map		*map;
 	int			**text;
 }				t_game;
 
@@ -84,7 +84,7 @@ typedef struct	s_app
 /*
 ** read_map.c
 */
-t_map			read_map(int argc, char **argv);
+t_map			*read_map(char **argv);
 
 /*
 ** game_main.c

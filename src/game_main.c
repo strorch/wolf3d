@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   game_main.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mstorcha <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/09/15 20:58:30 by mstorcha          #+#    #+#             */
-/*   Updated: 2018/09/15 20:58:45 by mstorcha         ###   ########.fr       */
+/*   Created: 2019/10/19 19:53:25 by mstorcha          #+#    #+#             */
+/*   Updated: 2019/10/19 19:53:27 by mstorcha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ int		*get_pixels_map(t_game *game_h)
 				side = 1;
 			}
 			//Check if ray has hit a wall
-			if (game.map.keys[mapX][mapY] > 0) hit = 1;
+			if (game.map->keys[mapX][mapY] > 0) hit = 1;
 		}
 		//Calculate distance projected on camera direction (Euclidean distance will give fisheye effect!)
 		if (side == 0) perpWallDist = (mapX - posX + (1 - stepX) / 2) / rayDirX;
@@ -111,7 +111,7 @@ int		*get_pixels_map(t_game *game_h)
 		if(drawEnd >= h)drawEnd = h - 1;
 
 		//texturing calculations
-		int texNum = game.map.keys[mapX][mapY] - 1; //1 subtracted from it so that texture 0 can be used!
+		int texNum = game.map->keys[mapX][mapY] - 1; //1 subtracted from it so that texture 0 can be used!
 
 		//calculate value of wallX
 		double wallX; //where exactly the wall was hit

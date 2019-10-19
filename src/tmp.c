@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   tmp.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mstorcha <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/09/15 20:58:30 by mstorcha          #+#    #+#             */
-/*   Updated: 2018/09/15 20:58:45 by mstorcha         ###   ########.fr       */
+/*   Created: 2019/10/19 19:53:56 by mstorcha          #+#    #+#             */
+/*   Updated: 2019/10/19 19:53:57 by mstorcha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,28 +44,28 @@ int worldMap[H][W]=
   {2,2,2,2,1,2,2,2,2,2,2,1,2,2,2,5,5,5,5,5,5,5,5,5}
 };
 
-t_map   read_map(int argc, char **argv)
+t_map   *read_map(char **argv)
 {
-  t_map   map;
-  int     **key_map;
-  int     i;
-  int     j;
+	t_map   *map;
+	int     **key_map;
+	int     i;
+	int     j;
 
-  (void)argc;
-  (void)argv;
-  key_map = (int **)ft_memalloc(sizeof(int *) * H);
-  i = -1;
-  while (++i < H)
-  {
-    key_map[i] = (int *)ft_memalloc(sizeof(int) * W);
-    j = -1;
-    while (++j < W)
-    {
-      key_map[i][j] = worldMap[i][j];
-    }
-  }
-  map.h = H;
-  map.w = W;
-  map.keys = key_map;
-  return (map);
+	(void)argv;
+	map = (t_map *)ft_memalloc(sizeof(t_map));
+	key_map = (int **)ft_memalloc(sizeof(int *) * H);
+	i = -1;
+	while (++i < H)
+	{
+		key_map[i] = (int *)ft_memalloc(sizeof(int) * W);
+		j = -1;
+		while (++j < W)
+		{
+			key_map[i][j] = worldMap[i][j];
+		}
+	}
+	map->h = H;
+	map->w = W;
+	map->keys = key_map;
+	return (map);
 }

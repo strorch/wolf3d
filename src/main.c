@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mstorcha <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/09/15 20:58:30 by mstorcha          #+#    #+#             */
-/*   Updated: 2018/09/15 20:58:45 by mstorcha         ###   ########.fr       */
+/*   Created: 2019/10/19 19:53:34 by mstorcha          #+#    #+#             */
+/*   Updated: 2019/10/19 19:53:35 by mstorcha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	exit_message(const char *str)
 
 void	key_events(SDL_Event *event, t_app *app)
 {
-	t_map		map;
+	t_map		*map;
 	t_camera	c;
 	t_vec		d;
 	t_vec		p;
@@ -46,14 +46,14 @@ void	key_events(SDL_Event *event, t_app *app)
 	if (event->K_K == SDL_SCANCODE_UP)
 	{
 		double	w = 0.25;
-		if(map.keys[(int)(p.x + d.x * (c.mv_speed + w))][(int)p.y - (int)(d.y * w)] == 0) posX += d.x * c.mv_speed;
-		if(map.keys[(int)p.x - (int)(d.x * w)][(int)(p.y + d.y * (c.mv_speed + w))] == 0) posY += d.y * c.mv_speed;
+		if(map->keys[(int)(p.x + d.x * (c.mv_speed + w))][(int)p.y - (int)(d.y * w)] == 0) posX += d.x * c.mv_speed;
+		if(map->keys[(int)p.x - (int)(d.x * w)][(int)(p.y + d.y * (c.mv_speed + w))] == 0) posY += d.y * c.mv_speed;
 	}
 	else if (event->K_K == SDL_SCANCODE_DOWN)
 	{
 		double	w = -0.25;
-		if(map.keys[(int)(p.x + d.x * (c.mv_speed + w))][(int)p.y - (int)(d.y * w)] == 0) posX -= d.x * c.mv_speed;
-		if(map.keys[(int)p.x - (int)(d.x * w)][(int)(p.y + d.y * (c.mv_speed + w))] == 0) posY -= d.y * c.mv_speed;
+		if(map->keys[(int)(p.x + d.x * (c.mv_speed + w))][(int)p.y - (int)(d.y * w)] == 0) posX -= d.x * c.mv_speed;
+		if(map->keys[(int)p.x - (int)(d.x * w)][(int)(p.y + d.y * (c.mv_speed + w))] == 0) posY -= d.y * c.mv_speed;
 	}
 	else if (event->K_K == SDL_SCANCODE_RIGHT)
 	{
@@ -146,17 +146,31 @@ int		**get_textures()
 	return texture;
 }
 
+void    print_usage(void)
+{
+    ft_putendl("Usage:");
+    ft_putendl("\t./wolf3d maps/1.m");
+    exit(0);
+}
+
 int		main1(int argc, char **argv)
 {
 	SDL_Event	event;
 	t_sdl		*sdl;
 	t_app		app;
+	t_map		*map;
 	int			*tmp_arr;
 
+//	if (argc != 2) {
+//	    print_usage();
+//	}
+	if (!(map = read_map(argv))) {
+		exit_message("Wrong map");
+	}
 	app.sdl = init_sdl();
 	sdl = app.sdl;
 	app.game = (t_game *)ft_memalloc(sizeof(t_game));
-	app.game->map = read_map(argc, argv);
+	app.game->map = map;
 	app.game->user = (t_user *)ft_memalloc(sizeof(t_user));
 	app.game->text = get_textures();
 	init_user(&app.game->user);
@@ -183,13 +197,15 @@ int		main1(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
-	t_map m = read_map(argc, argv);
+	t_map *m = read_map(argv);
+	system("leaks wolf3d");
+//TODO: 1
 
-	for (int i = 0; i < m.h; i++)
-	{
-		for (int j = 0; j < m.w; j++)
-			printf("%d ", m.keys[i][j]);
-		printf("\n");
-	}
+//	for (int i = 0; i < m->h; i++)
+//	{
+//		for (int j = 0; j < m->w; j++)
+//			printf("%d ", m->keys[i][j]);
+//		printf("\n");
+//	}
 	return 0;
 }

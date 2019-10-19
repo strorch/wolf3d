@@ -5,8 +5,8 @@
 #                                                     +:+ +:+         +:+      #
 #    By: mstorcha <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2018/01/26 15:48:11 by mstorcha          #+#    #+#              #
-#    Updated: 2018/09/15 20:56:33 by mstorcha         ###   ########.fr        #
+#    Created: 2019/10/19 19:54:20 by mstorcha          #+#    #+#              #
+#    Updated: 2019/10/19 19:54:22 by mstorcha         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,6 +38,7 @@ SOURCES			= \
 					game_main.c \
 					read_map.c \
 					colors.c
+#					tmp.c \
 
 ifeq ($(DESKTOP_SESSION),ubuntu)
     INCLUDES	+=	`sdl2-config --cflags --libs` -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf -lm -ldl
