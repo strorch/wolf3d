@@ -92,7 +92,7 @@ t_map			*read_map(char **argv);
 int				*get_pixels_map(t_game *game_h);
 
 /*
-** main.c
+** utils.c
 */
 void			exit_message(const char *str);
 

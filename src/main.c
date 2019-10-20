@@ -18,12 +18,6 @@
 #define K_K key.keysym.scancode
 #define E_TYPE type
 
-void	exit_message(const char *str)
-{
-	ft_putendl(str);
-	exit(0);
-}
-
 void	key_events(SDL_Event *event, t_app *app)
 {
 	t_map		*map;
@@ -197,8 +191,29 @@ int		main1(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
-	t_map *m = read_map(argv);
-	system("leaks wolf3d");
+	t_map *m;
+	char **tmp;
+
+	if (argc == 2) {
+		tmp = argv;
+	} else {
+		tmp = (char**)ft_memalloc(sizeof(char*) * 2);
+		tmp[1] = (char*)ft_memalloc(sizeof(char) * 15);
+		ft_strcpy(tmp[1], "./maps/1.m");
+		printf("%s\n", tmp[1]);
+	}
+	if (!(m = read_map(tmp))) {
+		exit_message("parse error");
+	}
+//	for (int i =0 ; i < m->h; i++) {
+//		for (int j = 0; j < m->w; j++) {
+//			printf("%i ", m->keys[i][j]);
+//		}
+//		printf("\n");
+//	}
+//	ft_putendl("");
+//	ft_putendl("");
+//	while(1);
 //TODO: 1
 
 //	for (int i = 0; i < m->h; i++)

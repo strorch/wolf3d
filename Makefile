@@ -37,6 +37,7 @@ SOURCES			= \
 					main.c \
 					game_main.c \
 					read_map.c \
+					utils.c \
 					colors.c
 #					tmp.c \
 
