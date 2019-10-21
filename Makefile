@@ -39,7 +39,6 @@ SOURCES			= \
 					read_map.c \
 					utils.c \
 					colors.c
-#					tmp.c \
 
 ifeq ($(DESKTOP_SESSION),ubuntu)
     INCLUDES	+=	`sdl2-config --cflags --libs` -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf -lm -ldl
@@ -54,6 +53,7 @@ else
 endif
 
 INCLUDES		+=	-I$(INCLUDES_DIR)
+INCLUDES		+=	-I$(LIBFT_DIR)
 
 LIBFTA			=	$(LIBFT_DIR)libft.a
 LIBFTA_FLAGS	=	-L$(LIBFT_DIR) -lft

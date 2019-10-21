@@ -13,7 +13,7 @@
 #ifndef WOLF_H
 # define WOLF_H
 
-# include "../libft/libft.h"
+# include "libft.h"
 # define SCREEN_H 800
 # define SCREEN_W 800
 
@@ -95,6 +95,7 @@ int				*get_pixels_map(t_game *game_h);
 ** utils.c
 */
 void			exit_message(const char *str);
+void            print_usage(void);
 
 /*
 ** colors.c

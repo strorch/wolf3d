@@ -15,16 +15,12 @@
 static int		str_array_size(char **array)
 {
 	int i;
-	int counter;
 
 	if (!array)
 		return 0;
-	i = 0;
-	while (array[i] != 0) {
-		i++;
-		counter++;
-	}
-	return (counter);
+	i = -1;
+	while (array[++i] != 0);
+	return (i);
 }
 
 static t_vec	*get_map_size(const int fd)
@@ -64,34 +60,28 @@ static int		*set_line(const char *str, int sz_alloc)
 	char	**split;
 	int		i;
 
-	split = ft_strsplit(str, ' ');
-	int c;
-	for (c = 0; split[c] != 0; c++) {
-		printf("%s:%i ", split[c], c);
-	}
-	printf("FUCK\n");
-	if (!split || (c != (int)sz_alloc)) {
-		printf("KEK1\n");
+	if (!(split = ft_strsplit(str, ' ')) || (str_array_size(split) != (int)sz_alloc)) {
+//		printf("KEK1\n");
 		return NULL;
 	}
-	printf("FUCK\n");
+//	printf("FUCK\n");
 	if (!(line = (int *)ft_memalloc(sizeof(int) * sz_alloc))) {
-		printf("KEK2\n");
+//		printf("KEK2\n");
 		return NULL;
 	}
-	i = -1;
-	printf("FUCK\n");
-	while (++i < sz_alloc)
+	i = 0;
+//	printf("FUCK\n");
+	while (i < sz_alloc)
 	{
-//		printf("%s\n", split[i]);
-		if (!(line[i] = ft_atoi(split[i]))) {
-			printf("KEK3\n");
-			return NULL;
-		}
+		printf("%s:%i ", split[i], sz_alloc);
+        line[i] = ft_atoi(split[i]);
+		i++;
 	}
+	ft_del_str(split);
 	for (i = 0; i < sz_alloc; i++) {
 		printf("%i:%i ", line[i], i);
 	}
+    printf("\n");
 	return line;
 }
 
@@ -153,19 +143,12 @@ t_map			*read_map(char **argv)
 		return (NULL);
 	}
 	printf("OK\n");
-	for (int i =0 ; i < map_sz->x; i++) {
-		for (int j = 0; j < map_sz->y; j++) {
-			printf("%i ", keys[i][j]);
-		}
-		printf("\n");
-	}
 
 	map = (t_map *)ft_memalloc(sizeof(t_map));
 	map->h = map_sz->x;
 	map->w = map_sz->y;
 	map->keys = keys;
 	ft_memdel((void **)&map_sz);
-//TODO: 1
 
 	return (map);
 }

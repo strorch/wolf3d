@@ -140,25 +140,26 @@ int		**get_textures()
 	return texture;
 }
 
-void    print_usage(void)
-{
-    ft_putendl("Usage:");
-    ft_putendl("\t./wolf3d maps/1.m");
-    exit(0);
-}
-
-int		main1(int argc, char **argv)
+int		main(int argc, char **argv)
 {
 	SDL_Event	event;
 	t_sdl		*sdl;
 	t_app		app;
 	t_map		*map;
 	int			*tmp_arr;
+    char        **tmp_argv;
 
-//	if (argc != 2) {
-//	    print_usage();
-//	}
-	if (!(map = read_map(argv))) {
+    if (argc == 2) {
+        if (!ft_strcmp(argv[1], "-h"))
+            print_usage();
+        tmp_argv = argv;
+    } else {
+        tmp_argv = (char**)ft_memalloc(sizeof(char*) * 2);
+        tmp_argv[1] = (char*)ft_memalloc(sizeof(char) * 15);
+        ft_strcpy(tmp_argv[1], "./maps/1.m");
+        printf("%s\n", tmp_argv[1]);
+    }
+	if (!(map = read_map(tmp_argv))) {
 		exit_message("Wrong map");
 	}
 	app.sdl = init_sdl();
@@ -168,6 +169,7 @@ int		main1(int argc, char **argv)
 	app.game->user = (t_user *)ft_memalloc(sizeof(t_user));
 	app.game->text = get_textures();
 	init_user(&app.game->user);
+
 	while (1)
 	{
 		sdl_events(&event, &app);
@@ -187,40 +189,4 @@ int		main1(int argc, char **argv)
 	TTF_Quit();
 	SDL_Quit();
 	return (0);
-}
-
-int main(int argc, char **argv)
-{
-	t_map *m;
-	char **tmp;
-
-	if (argc == 2) {
-		tmp = argv;
-	} else {
-		tmp = (char**)ft_memalloc(sizeof(char*) * 2);
-		tmp[1] = (char*)ft_memalloc(sizeof(char) * 15);
-		ft_strcpy(tmp[1], "./maps/1.m");
-		printf("%s\n", tmp[1]);
-	}
-	if (!(m = read_map(tmp))) {
-		exit_message("parse error");
-	}
-//	for (int i =0 ; i < m->h; i++) {
-//		for (int j = 0; j < m->w; j++) {
-//			printf("%i ", m->keys[i][j]);
-//		}
-//		printf("\n");
-//	}
-//	ft_putendl("");
-//	ft_putendl("");
-//	while(1);
-//TODO: 1
-
-//	for (int i = 0; i < m->h; i++)
-//	{
-//		for (int j = 0; j < m->w; j++)
-//			printf("%d ", m->keys[i][j]);
-//		printf("\n");
-//	}
-	return 0;
 }
