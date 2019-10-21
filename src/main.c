@@ -17,6 +17,7 @@
 
 #define K_K key.keysym.scancode
 #define E_TYPE type
+#define W_E window.event
 
 void	key_events(SDL_Event *event, t_app *app)
 {
@@ -67,12 +68,23 @@ void	key_events(SDL_Event *event, t_app *app)
 	(*app).game->user->cam.pos.y = posY;
 }
 
-void	sdl_events(SDL_Event *event, t_app *app)
+void	resize_window(t_map *m, int new_width, int new_height)
 {
-	while (SDL_PollEvent(event))
+	printf("HELLO!\n");
+//	m->w = new_width;
+//	m->h = new_height;
+//	!(m->screen = SDL_GetWindowSurface(m->window))
+//	? put_error(SDL_GetError()) : 0;
+//	m->image = m->screen->pixels;
+}
+
+void	sdl_events(SDL_Event *e, t_app *app)
+{
+	while (SDL_PollEvent(e))
 	{
-		(event->E_TYPE == SDL_KEYDOWN) ? key_events(event, app) : 0;
-		(event->E_TYPE == SDL_QUIT) ? exit_message("Done!\n") : 0;
+		(e->E_TYPE == SDL_KEYDOWN) ? key_events(e, app) : 0;
+		(e->E_TYPE == SDL_QUIT) ? exit_message("Done!\n") : 0;
+		(e->W_E == SDL_WINDOWEVENT_RESIZED) ? resize_window(app->game->map, e->window.data1, e->window.data2) : 0;
 	}
 }
 
@@ -86,7 +98,7 @@ t_sdl	*init_sdl(void)
 	if (!(sdl->window = SDL_CreateWindow("Wolf3D",
 						SDL_WINDOWPOS_UNDEFINED,
 						SDL_WINDOWPOS_UNDEFINED, SCREEN_W, SCREEN_H,
-						SDL_WINDOW_SHOWN)))
+										 SDL_WINDOW_ALLOW_HIGHDPI)))
 		exit_message("Error creating window");
 	if (!(sdl->rend = SDL_CreateRenderer(sdl->window, -1,
 							SDL_RENDERER_ACCELERATED)))
@@ -106,8 +118,8 @@ void	init_user(t_user **user_h)
 	user = *user_h;
 	dir.x = -1;
 	dir.y = 0;
-	pos.x = 22.0;
-	pos.y = 11.5;
+	pos.x = 2;
+	pos.y = 1.5;
 	plane.x = 0;
 	plane.y = 0.66;
 	user->cam.dir = dir;
@@ -156,7 +168,7 @@ int		main(int argc, char **argv)
     } else {
         tmp_argv = (char**)ft_memalloc(sizeof(char*) * 2);
         tmp_argv[1] = (char*)ft_memalloc(sizeof(char) * 15);
-        ft_strcpy(tmp_argv[1], "./maps/1.m");
+        ft_strcpy(tmp_argv[1], "./maps/2.m");
         printf("%s\n", tmp_argv[1]);
     }
 	if (!(map = read_map(tmp_argv))) {

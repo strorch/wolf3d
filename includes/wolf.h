@@ -15,7 +15,7 @@
 
 # include "libft.h"
 # define SCREEN_H 800
-# define SCREEN_W 800
+# define SCREEN_W 1100
 
 # include <math.h>
 # include <pwd.h>

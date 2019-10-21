@@ -25,6 +25,7 @@ int		*get_pixels_map(t_game *game_h)
 	game = *game_h;
 	start = clock();
 	int *map = (int *)ft_memalloc(sizeof(int) * SCREEN_W * SCREEN_H);
+	printf("%i %i\n", SCREEN_W, SCREEN_H);
 	user = *game.user;
 
 	double posX = user.cam.pos.x, posY = user.cam.pos.y;  //x and y start position
@@ -40,8 +41,9 @@ int		*get_pixels_map(t_game *game_h)
 	{
 		//calculate ray position and direction
 		double cameraX = 2 * x / (double)w - 1; //x-coordinate in camera space
+		double cameraY = 2 * x / (double)h - 1; //x-coordinate in camera space
 		double rayDirX = dirX + planeX * cameraX;
-		double rayDirY = dirY + planeY * cameraX;
+		double rayDirY = dirY + planeY * cameraY;
 		int mapX = (int)posX;
 		int mapY = (int)posY;
 		//length of ray from current position to next x or y-side

@@ -34,21 +34,24 @@ static t_vec	*get_map_size(const int fd)
 	if (res == -1) {
 		return NULL;
 	}
-	splitted_size = ft_strsplit(size_str, ' ');
+	if (!(splitted_size = ft_strsplit(size_str, ' ')))
+		return NULL;
 
 	for (int i = 0; splitted_size[i] != 0; i++) {
 		printf("%i - %s\n", i, splitted_size[i]);
 	}
 	printf("num - %i\n", str_array_size(splitted_size));
 
-	if (str_array_size(splitted_size) < 2) {
-		ft_del_str(splitted_size);
-		ft_memdel((void **)&size_str);
+	if (str_array_size(splitted_size) != 2) {
 		return (NULL);
 	}
-	size = (t_vec *)ft_memalloc(sizeof(t_vec));
+	printf("num - %i\n", str_array_size(splitted_size));
+	if (!(size = (t_vec *)ft_memalloc(sizeof(t_vec))))
+		return NULL;
 	size->x = ft_atoi(splitted_size[0]);
 	size->y = ft_atoi(splitted_size[1]);
+	if (size->x < 3 || size->y < 3)
+		return NULL;
 	ft_del_str(splitted_size);
 	ft_memdel((void **)&size_str);
 	return (size);
@@ -61,7 +64,7 @@ static int		*set_line(const char *str, int sz_alloc)
 	int		i;
 
 	if (!(split = ft_strsplit(str, ' ')) || (str_array_size(split) != (int)sz_alloc)) {
-//		printf("KEK1\n");
+		printf("KEK1\n");
 		return NULL;
 	}
 //	printf("FUCK\n");
@@ -88,7 +91,6 @@ static int		*set_line(const char *str, int sz_alloc)
 static int		**readf(int fd, t_vec *map_sz)
 {
 	int		i;
-	int		j;
 	char	*str;
 	int		res_fd;
 	int		**res;
@@ -101,22 +103,35 @@ static int		**readf(int fd, t_vec *map_sz)
 		if (str)
 			ft_memdel((void **)&str);
 		res_fd = ft_get_next_line(fd, &str);
-		printf("\n%s\n", str);
-		if (res_fd == -1)
+//		printf("%i %f %s  ", res_fd, map_sz->x, str);
+//		printf("\n%s\n", str);
+		if (res_fd == -1) {
 			return (NULL);
-		else if (res_fd == 0)
-			break;
-		else if (!(res[i] = set_line(str, (int)map_sz->y))) {
-			free(str);
-			for (int j = 0; j < map_sz->y; j++) {
-				printf("a:%i ", res[i][j]);
-			}
-			printf("\n");
 		}
+		else if (res_fd == 0) {
+			break;
+		}
+		else if (!(res[i] = set_line(str, (int)map_sz->y)))
+			exit_message("Wrong map length");
 		i++;
 	}
-
+	if (map_sz->x != i)
+		exit_message("Alloc error");
 	return (res);
+}
+
+void			borders_check(t_map *map)
+{
+	int i;
+
+	i = -1;
+	while (++i < map->h)
+		if (map->keys[i][0] == 0 || map->keys[i][map->w - 1] == 0)
+			exit_message("Borders have 0");
+	i = -1;
+	while (++i < map->w)
+		if (map->keys[map->h - 1][i] == 0 || map->keys[0][i] == 0)
+			exit_message("Borders have 0");
 }
 
 t_map			*read_map(char **argv)
@@ -129,26 +144,18 @@ t_map			*read_map(char **argv)
 
 	fname = argv[1];
 	fd = open(fname, O_RDONLY);
-	if (fd == -1) {
-		printf("HERE1\n");
-		return (NULL);
-	}
-	if (!(map_sz = get_map_size(fd))) {
-		printf("HERE2\n");
-		return (NULL);
-	}
+	if (fd == -1)
+		exit_message("file does not exist");
+	if (!(map_sz = get_map_size(fd)))
+		exit_message("Wrong map sizes");
 	printf("SIZE RES = %i %i\n", (int)map_sz->x, (int)map_sz->y);
-	if (!(keys = readf(fd, map_sz))) {
-		printf("HERE3\n");
-		return (NULL);
-	}
-	printf("OK\n");
-
-	map = (t_map *)ft_memalloc(sizeof(t_map));
+	if (!(keys = readf(fd, map_sz)) || !(map = (t_map *)ft_memalloc(sizeof(t_map))))
+		exit_message("Map parse error");
 	map->h = map_sz->x;
 	map->w = map_sz->y;
 	map->keys = keys;
+	printf("HERE\n");
+	borders_check(map);
 	ft_memdel((void **)&map_sz);
-
 	return (map);
 }
