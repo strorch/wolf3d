@@ -149,7 +149,7 @@ static t_vec	*find_user_pos(char ***map, t_vec *map_sz)
 	{
 		j = -1;
 		while (++j < map_sz->y)
-			if (ft_strcmp(map[i][j], "U"))
+			if (!ft_strcmp(map[i][j], "U"))
 			{
 				pos = (t_vec *)ft_memalloc(sizeof(t_vec));
 				pos->x = i;
@@ -180,7 +180,19 @@ static int		**tranform_to_int(char ***map, t_vec *map_sz)
 
 static void		free_trible_pointer(char ***mem, t_vec *map_sz)
 {
-	//TODO: kegw
+	int		i;
+	int		j;
+
+	i = -1;
+	while (++i < map_sz->x)
+	{
+		j = -1;
+		while (++j < map_sz->y)
+		{
+			ft_memdel((void **)&mem[i][j]);
+		}
+		ft_memdel((void **)&mem[i]);
+	}
 }
 
 t_vec			*read_map(t_game **game_h, char *fname)
@@ -188,6 +200,7 @@ t_vec			*read_map(t_game **game_h, char *fname)
 	t_map			*map;
 	t_game			*game;
 	int				fd;
+	int 			**keys;
 	t_vec			*map_sz;
 	t_vec			*user_pos;
 	char			***ch_keys;
@@ -201,24 +214,20 @@ t_vec			*read_map(t_game **game_h, char *fname)
 	if (!(ch_keys = readf(fd, map_sz))
 			|| !(map = (t_map *)ft_memalloc(sizeof(t_map))))
 		exit_message("Map parse error");
-
-//	for (int i = 0; i < map_sz->x; i++) {
-//		for (int j = 0; j < map_sz->y; j++) {
-//			printf("%s ", ch_keys[i][j]);
-//		}
-//		printf("\n");
-//	}
+	keys = tranform_to_int(ch_keys, map_sz);
 
 	if (!(user_pos = find_user_pos(ch_keys, map_sz)))
 		exit_message("User is not defined");
-//	if (!())
-	system("leaks wolf3d");
+
+	free_trible_pointer(ch_keys, map_sz);
+	//	if (!())
+//	system("leaks wolf3d");
 	map->h = map_sz->x;
 	map->w = map_sz->y;
-//	map->keys = keys;
+	map->keys = keys;
 //	borders_check(map);
 	ft_memdel((void **)&map_sz);
-//	game->map = map;
+	game->map = map;
 	return user_pos;
 }
 
@@ -229,6 +238,16 @@ t_game			*init_game(char *fname)
 
 	game = (t_game *)ft_memalloc(sizeof(t_game));
 	user_pos = read_map(&game, fname);
+
+	printf("USER: %f %f\n", user_pos->x, user_pos->y);
+
+	for (int i = 0; i < game->map->h; i++) {
+		for (int j = 0; j < game->map->w; j++) {
+			printf("%i ", game->map->keys[i][j]);
+		}
+		printf("\n");
+	}
+	//TODO validate user
 
 	game->text = get_textures();
 	exit(1);
