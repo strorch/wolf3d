@@ -15,7 +15,7 @@
 
 # include "libft.h"
 # define SCREEN_H 800
-# define SCREEN_W 1100
+# define SCREEN_W 800
 
 # include <math.h>
 # include <pwd.h>
@@ -84,7 +84,7 @@ typedef struct	s_app
 /*
 ** read_map.c
 */
-t_map			*read_map(char **argv);
+t_game			*init_game(int argc, char **argv);
 
 /*
 ** game_main.c
@@ -95,7 +95,7 @@ int				*get_pixels_map(t_game *game_h);
 ** utils.c
 */
 void			exit_message(const char *str);
-void            print_usage(void);
+void			print_usage(void);
 
 /*
 ** colors.c

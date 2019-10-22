@@ -84,7 +84,7 @@ void	sdl_events(SDL_Event *e, t_app *app)
 	{
 		(e->E_TYPE == SDL_KEYDOWN) ? key_events(e, app) : 0;
 		(e->E_TYPE == SDL_QUIT) ? exit_message("Done!\n") : 0;
-		(e->W_E == SDL_WINDOWEVENT_RESIZED) ? resize_window(app->game->map, e->window.data1, e->window.data2) : 0;
+//		(e->W_E == SDL_WINDOWEVENT_RESIZED) ? resize_window(app->game->map, e->window.data1, e->window.data2) : 0;
 	}
 }
 
@@ -96,9 +96,9 @@ t_sdl	*init_sdl(void)
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 		exit_message("Error in init sdl");
 	if (!(sdl->window = SDL_CreateWindow("Wolf3D",
-						SDL_WINDOWPOS_UNDEFINED,
-						SDL_WINDOWPOS_UNDEFINED, SCREEN_W, SCREEN_H,
-										 SDL_WINDOW_ALLOW_HIGHDPI)))
+			SDL_WINDOWPOS_UNDEFINED,
+			SDL_WINDOWPOS_UNDEFINED, SCREEN_W, SCREEN_H,
+			SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI)))
 		exit_message("Error creating window");
 	if (!(sdl->rend = SDL_CreateRenderer(sdl->window, -1,
 							SDL_RENDERER_ACCELERATED)))
@@ -106,50 +106,6 @@ t_sdl	*init_sdl(void)
 	if (!(sdl->sur = SDL_CreateRGBSurface(0, SCREEN_W, SCREEN_H, 32, 0, 0, 0, 0)))
 		exit_message("Error in creating surface");
 	return (sdl);
-}
-
-void	init_user(t_user **user_h)
-{
-	t_user	*user;
-	t_vec	dir;
-	t_vec	pos;
-	t_vec	plane;
-
-	user = *user_h;
-	dir.x = -1;
-	dir.y = 0;
-	pos.x = 2;
-	pos.y = 1.5;
-	plane.x = 0;
-	plane.y = 0.66;
-	user->cam.dir = dir;
-	user->cam.pos = pos;
-	user->cam.plane = plane;
-}
-
-int		**get_textures()
-{
-	int **texture = (int **)ft_memalloc(sizeof(int *) * 8);
-	for (int i = 0; i < 8; i++) {
-		texture[i] = (int *)ft_memalloc(sizeof(int) * texWidth * texHeight);
-	}
-
-	for(int x = 0; x < texWidth; x++)
-		for(int y = 0; y < texHeight; y++)
-		{
-			int xorcolor = (x * 256 / texWidth) ^ (y * 256 / texHeight);
-			int ycolor = y * 256 / texHeight;
-			int xycolor = y * 128 / texHeight + x * 128 / texWidth;
-			texture[0][texWidth * y + x] = 65536 * 254 * (x != y && x != texWidth - y);
-			texture[1][texWidth * y + x] = xycolor + 256 * xycolor + 65536 * xycolor;
-			texture[2][texWidth * y + x] = 256 * xycolor + 65536 * xycolor;
-			texture[3][texWidth * y + x] = xorcolor + 256 * xorcolor + 65536 * xorcolor;
-			texture[4][texWidth * y + x] = 256 * xorcolor;
-			texture[5][texWidth * y + x] = 65536 * 192 * (x % 16 && y % 16);
-			texture[6][texWidth * y + x] = 65536 * ycolor;
-			texture[7][texWidth * y + x] = 128 + 256 * 128 + 65536 * 128;
-		}
-	return texture;
 }
 
 int		main(int argc, char **argv)
@@ -171,17 +127,10 @@ int		main(int argc, char **argv)
         ft_strcpy(tmp_argv[1], "./maps/2.m");
         printf("%s\n", tmp_argv[1]);
     }
-	if (!(map = read_map(tmp_argv))) {
-		exit_message("Wrong map");
-	}
+	if (!(app.game = init_game(tmp_argv[1])))
+		exit_message("Something went wrong");
 	app.sdl = init_sdl();
 	sdl = app.sdl;
-	app.game = (t_game *)ft_memalloc(sizeof(t_game));
-	app.game->map = map;
-	app.game->user = (t_user *)ft_memalloc(sizeof(t_user));
-	app.game->text = get_textures();
-	init_user(&app.game->user);
-
 	while (1)
 	{
 		sdl_events(&event, &app);
@@ -198,7 +147,4 @@ int		main(int argc, char **argv)
 		SDL_RenderPresent(sdl->rend);
 		SDL_DestroyTexture(sdl->text);
 	}
-	TTF_Quit();
-	SDL_Quit();
-	return (0);
 }

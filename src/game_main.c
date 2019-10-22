@@ -25,7 +25,7 @@ int		*get_pixels_map(t_game *game_h)
 	game = *game_h;
 	start = clock();
 	int *map = (int *)ft_memalloc(sizeof(int) * SCREEN_W * SCREEN_H);
-	printf("%i %i\n", SCREEN_W, SCREEN_H);
+//	printf("%i %i\n", SCREEN_W, SCREEN_H);
 	user = *game.user;
 
 	double posX = user.cam.pos.x, posY = user.cam.pos.y;  //x and y start position
