@@ -12,9 +12,6 @@
 
 #include "wolf.h"
 
-#define texWidth 64
-#define texHeight 64
-
 int		*get_pixels_map(t_game *game_h)
 {
 	clock_t start, end;

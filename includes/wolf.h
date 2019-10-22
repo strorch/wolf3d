@@ -17,6 +17,13 @@
 # define SCREEN_H 800
 # define SCREEN_W 800
 
+# define texWidth 64
+# define texHeight 64
+
+# define K_K key.keysym.scancode
+# define E_TYPE type
+# define W_E window.event
+
 # include <math.h>
 # include <pwd.h>
 # include <time.h>
@@ -84,7 +91,7 @@ typedef struct	s_app
 /*
 ** read_map.c
 */
-t_game			*init_game(int argc, char **argv);
+t_game			*init_game(char *fname);
 
 /*
 ** game_main.c

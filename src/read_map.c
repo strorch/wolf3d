@@ -46,11 +46,6 @@ static t_vec	*get_map_size(const int fd)
 	return (size);
 }
 
-static t_vec	*find_user_pos(char **map)
-{
-	return (NULL);
-}
-
 static char		**set_line_arr(const char *str, int sz_alloc)
 {
 	char	**split;
@@ -98,15 +93,14 @@ void			borders_check(t_map *map)
 			exit_message("Borders have 0");
 }
 
-void	init_user(t_user **user_h)
+t_user			*init_user()
 {
 	t_user	*user;
 	t_vec	dir;
 	t_vec	pos;
 	t_vec	plane;
-	app.game->user = (t_user *)ft_memalloc(sizeof(t_user));
 
-	user = *user_h;
+	user = (t_user *)ft_memalloc(sizeof(t_user));
 	dir.x = -1;
 	dir.y = 0;
 	pos.x = 2;
@@ -116,6 +110,7 @@ void	init_user(t_user **user_h)
 	user->cam.dir = dir;
 	user->cam.pos = pos;
 	user->cam.plane = plane;
+	return user;
 }
 
 int		**get_textures()
@@ -143,12 +138,58 @@ int		**get_textures()
 	return texture;
 }
 
-void			read_map(char *fname)
+static t_vec	*find_user_pos(char ***map, t_vec *map_sz)
+{
+	int		i;
+	int		j;
+	t_vec	*pos;
+
+	i = -1;
+	while (++i < map_sz->x)
+	{
+		j = -1;
+		while (++j < map_sz->y)
+			if (ft_strcmp(map[i][j], "U"))
+			{
+				pos = (t_vec *)ft_memalloc(sizeof(t_vec));
+				pos->x = i;
+				pos->y = j;
+				return (pos);
+			}
+	}
+	return (NULL);
+}
+
+static int		**tranform_to_int(char ***map, t_vec *map_sz)
+{
+	int		i;
+	int		j;
+	int 	**res;
+
+	res = (int **)ft_memalloc(sizeof(int *) * map_sz->x);
+	i = -1;
+	while (++i < map_sz->x)
+	{
+		j = -1;
+		res[i] = (int *)ft_memalloc(sizeof(int) * map_sz->y);
+		while (++j < map_sz->y)
+			res[i][j] = ft_atoi(map[i][j]);
+	}
+	return (res);
+}
+
+static void		free_trible_pointer(char ***mem, t_vec *map_sz)
+{
+	//TODO: kegw
+}
+
+t_vec			*read_map(t_game **game_h, char *fname)
 {
 	t_map			*map;
 	t_game			*game;
 	int				fd;
 	t_vec			*map_sz;
+	t_vec			*user_pos;
 	char			***ch_keys;
 
 	game = *game_h;
@@ -161,13 +202,15 @@ void			read_map(char *fname)
 			|| !(map = (t_map *)ft_memalloc(sizeof(t_map))))
 		exit_message("Map parse error");
 
-	for (int i = 0; i < map_sz->x; i++) {
-		for (int j = 0; j < map_sz->y; j++) {
-			printf("%s ", ch_keys[i][j]);
-		}
-		printf("\n");
-	}
+//	for (int i = 0; i < map_sz->x; i++) {
+//		for (int j = 0; j < map_sz->y; j++) {
+//			printf("%s ", ch_keys[i][j]);
+//		}
+//		printf("\n");
+//	}
 
+	if (!(user_pos = find_user_pos(ch_keys, map_sz)))
+		exit_message("User is not defined");
 //	if (!())
 	system("leaks wolf3d");
 	map->h = map_sz->x;
@@ -175,15 +218,20 @@ void			read_map(char *fname)
 //	map->keys = keys;
 //	borders_check(map);
 	ft_memdel((void **)&map_sz);
-	game->map = map;
-	exit(1);
+//	game->map = map;
+	return user_pos;
 }
 
 t_game			*init_game(char *fname)
 {
 	t_game	*game;
+	t_vec	*user_pos;
 
 	game = (t_game *)ft_memalloc(sizeof(t_game));
+	user_pos = read_map(&game, fname);
+
 	game->text = get_textures();
+	exit(1);
+
 	return game;
 }

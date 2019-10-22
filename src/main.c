@@ -12,13 +12,6 @@
 
 #include "wolf.h"
 
-#define texWidth 64
-#define texHeight 64
-
-#define K_K key.keysym.scancode
-#define E_TYPE type
-#define W_E window.event
-
 void	key_events(SDL_Event *event, t_app *app)
 {
 	t_map		*map;
