@@ -114,4 +114,9 @@ int				get_hex_color(t_vec c);
 */
 int				validate_params(int argc, char **argv);
 
+/*
+** textures.c
+*/
+int				**get_textures(void);
+
 #endif

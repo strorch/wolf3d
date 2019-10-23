@@ -79,21 +79,27 @@ static char		***readf(int fd, t_vec *map_sz)
 	return (res);
 }
 
-void			borders_check(t_map *map)
+int				check_border_item(char *item)
+{
+	return !ft_strcmp(item, "0") || !ft_strcmp(item, "U");
+}
+
+int				borders_check(char ***map, t_vec *map_sz)
 {
 	int i;
 
 	i = -1;
-	while (++i < map->h)
-		if (map->keys[i][0] == 0 || map->keys[i][map->w - 1] == 0)
-			exit_message("Borders have 0");
+	while (++i < map_sz->x)
+		if (check_border_item(map[i][0]) || check_border_item(map[i][(int)map_sz->y - 1]))
+			return 0;
 	i = -1;
-	while (++i < map->w)
-		if (map->keys[map->h - 1][i] == 0 || map->keys[0][i] == 0)
-			exit_message("Borders have 0");
+	while (++i < map_sz->y)
+		if (check_border_item(map[(int)map_sz->x - 1][i]) || check_border_item(map[0][i]))
+			return 0;
+	return 1;
 }
 
-t_user			*init_user()
+t_user			*init_user(t_vec *user_pos)
 {
 	t_user	*user;
 	t_vec	dir;
@@ -103,39 +109,14 @@ t_user			*init_user()
 	user = (t_user *)ft_memalloc(sizeof(t_user));
 	dir.x = -1;
 	dir.y = 0;
-	pos.x = 2;
-	pos.y = 1.5;
+	pos.x = user_pos->x;
+	pos.y = user_pos->y;
 	plane.x = 0;
 	plane.y = 0.66;
 	user->cam.dir = dir;
 	user->cam.pos = pos;
 	user->cam.plane = plane;
 	return user;
-}
-
-int		**get_textures()
-{
-	int **texture = (int **)ft_memalloc(sizeof(int *) * 8);
-	for (int i = 0; i < 8; i++) {
-		texture[i] = (int *)ft_memalloc(sizeof(int) * texWidth * texHeight);
-	}
-
-	for(int x = 0; x < texWidth; x++)
-		for(int y = 0; y < texHeight; y++)
-		{
-			int xorcolor = (x * 256 / texWidth) ^ (y * 256 / texHeight);
-			int ycolor = y * 256 / texHeight;
-			int xycolor = y * 128 / texHeight + x * 128 / texWidth;
-			texture[0][texWidth * y + x] = 65536 * 254 * (x != y && x != texWidth - y);
-			texture[1][texWidth * y + x] = xycolor + 256 * xycolor + 65536 * xycolor;
-			texture[2][texWidth * y + x] = 256 * xycolor + 65536 * xycolor;
-			texture[3][texWidth * y + x] = xorcolor + 256 * xorcolor + 65536 * xorcolor;
-			texture[4][texWidth * y + x] = 256 * xorcolor;
-			texture[5][texWidth * y + x] = 65536 * 192 * (x % 16 && y % 16);
-			texture[6][texWidth * y + x] = 65536 * ycolor;
-			texture[7][texWidth * y + x] = 128 + 256 * 128 + 65536 * 128;
-		}
-	return texture;
 }
 
 static t_vec	*find_user_pos(char ***map, t_vec *map_sz)
@@ -193,6 +174,7 @@ static void		free_trible_pointer(char ***mem, t_vec *map_sz)
 		}
 		ft_memdel((void **)&mem[i]);
 	}
+	ft_memdel((void **)&mem);
 }
 
 t_vec			*read_map(t_game **game_h, char *fname)
@@ -214,18 +196,15 @@ t_vec			*read_map(t_game **game_h, char *fname)
 	if (!(ch_keys = readf(fd, map_sz))
 			|| !(map = (t_map *)ft_memalloc(sizeof(t_map))))
 		exit_message("Map parse error");
+	if (!(borders_check(ch_keys, map_sz)))
+		exit_message("Borders error");
 	keys = tranform_to_int(ch_keys, map_sz);
-
 	if (!(user_pos = find_user_pos(ch_keys, map_sz)))
 		exit_message("User is not defined");
-
 	free_trible_pointer(ch_keys, map_sz);
-	//	if (!())
-//	system("leaks wolf3d");
 	map->h = map_sz->x;
 	map->w = map_sz->y;
 	map->keys = keys;
-//	borders_check(map);
 	ft_memdel((void **)&map_sz);
 	game->map = map;
 	return user_pos;
@@ -247,10 +226,11 @@ t_game			*init_game(char *fname)
 		}
 		printf("\n");
 	}
-	//TODO validate user
+
+	game->user = init_user(user_pos);
+	ft_memdel((void **)&user_pos);
 
 	game->text = get_textures();
-	exit(1);
 
 	return game;
 }

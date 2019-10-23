@@ -38,6 +38,7 @@ SOURCES			= \
 					game_main.c \
 					read_map.c \
 					utils.c \
+					textures.c \
 					colors.c
 
 ifeq ($(DESKTOP_SESSION),ubuntu)
