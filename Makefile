@@ -24,7 +24,7 @@
 NAME = wolf3d
 
 CC = gcc
-# CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror
 #CFLAGS += -g
 
 FRAMEWORKS_DIR	= ./frameworks/
@@ -38,6 +38,7 @@ SOURCES			= \
 					game_main.c \
 					read_map.c \
 					utils.c \
+					keys_validation.c \
 					textures.c \
 					colors.c
 

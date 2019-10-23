@@ -1,26 +1,56 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   textures.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mstorcha <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/10/23 20:45:08 by mstorcha          #+#    #+#             */
+/*   Updated: 2019/10/23 20:45:10 by mstorcha         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "wolf.h"
 
-int		**get_textures(void)
+static void	init_pix_in_textures(int ***texture_h, int i, int y)
 {
-	int **texture = (int **)ft_memalloc(sizeof(int *) * 8);
-	for (int i = 0; i < 8; i++) {
-		texture[i] = (int *)ft_memalloc(sizeof(int) * texWidth * texHeight);
-	}
+	int xorcolor;
+	int ycolor;
+	int xycolor;
+	int **texture;
 
-	for(int x = 0; x < texWidth; x++)
-		for(int y = 0; y < texHeight; y++)
-		{
-			int xorcolor = (x * 256 / texWidth) ^ (y * 256 / texHeight);
-			int ycolor = y * 256 / texHeight;
-			int xycolor = y * 128 / texHeight + x * 128 / texWidth;
-			texture[0][texWidth * y + x] = 65536 * 254 * (x != y && x != texWidth - y);
-			texture[1][texWidth * y + x] = xycolor + 256 * xycolor + 65536 * xycolor;
-			texture[2][texWidth * y + x] = 256 * xycolor + 65536 * xycolor;
-			texture[3][texWidth * y + x] = xorcolor + 256 * xorcolor + 65536 * xorcolor;
-			texture[4][texWidth * y + x] = 256 * xorcolor;
-			texture[5][texWidth * y + x] = 65536 * 192 * (x % 16 && y % 16);
-			texture[6][texWidth * y + x] = 65536 * ycolor;
-			texture[7][texWidth * y + x] = 128 + 256 * 128 + 65536 * 128;
-		}
-	return texture;
+	texture = *texture_h;
+	xorcolor = (i * 256 / texWidth) ^ (y * 256 / texHeight);
+	ycolor = y * 256 / texHeight;
+	xycolor = y * 128 / texHeight + i * 128 / texWidth;
+	texture[0][texWidth * y + i] = 65536 * 254 * (i != y && i != texWidth - y);
+	texture[1][texWidth * y + i] = xycolor + 256 * xycolor + 65536 * xycolor;
+	texture[2][texWidth * y + i] = 256 * xycolor + 65536 * xycolor;
+	texture[3][texWidth * y + i] = xorcolor + 256 * xorcolor + 65536 * xorcolor;
+	texture[4][texWidth * y + i] = 256 * xorcolor;
+	texture[5][texWidth * y + i] = 65536 * 192 * (i % 16 && y % 16);
+	texture[6][texWidth * y + i] = 65536 * ycolor;
+	texture[7][texWidth * y + i] = 128 + 256 * 128 + 65536 * 128;
+}
+
+int			**get_textures(void)
+{
+	int y;
+	int i;
+	int **t;
+
+	if (!(t = (int **)ft_memalloc(sizeof(int *) * 8)))
+		exit_message("Mem alloc error");
+	i = -1;
+	while (++i < 8)
+		if (!(t[i] = (int *)ft_memalloc(texWidth * texHeight * sizeof(int))))
+			exit_message("Mem alloc error");
+	i = -1;
+	while (++i < texWidth)
+	{
+		y = -1;
+		while (++y < texHeight)
+			init_pix_in_textures(&t, i, y);
+	}
+	return (t);
 }

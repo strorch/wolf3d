@@ -20,6 +20,8 @@
 # define texWidth 64
 # define texHeight 64
 
+# define ITEMS_NUM 10
+
 # define K_K key.keysym.scancode
 # define E_TYPE type
 # define W_E window.event
@@ -118,5 +120,10 @@ int				validate_params(int argc, char **argv);
 ** textures.c
 */
 int				**get_textures(void);
+
+/*
+** keys_validation.c
+*/
+int				keys_validation(char ***map, t_vec *map_sz);
 
 #endif
