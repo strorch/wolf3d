@@ -118,7 +118,6 @@ int		main(int argc, char **argv)
         tmp_argv = (char**)ft_memalloc(sizeof(char*) * 2);
         tmp_argv[1] = (char*)ft_memalloc(sizeof(char) * 15);
         ft_strcpy(tmp_argv[1], "./maps/2.m");
-        printf("%s\n", tmp_argv[1]);
     }
 	if (!(app.game = init_game(tmp_argv[1])))
 		exit_message("Something went wrong");

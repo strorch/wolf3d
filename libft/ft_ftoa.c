@@ -12,6 +12,8 @@
 
 #include "libft.h"
 
+//TODO ftoa
+
 // char			*ft_strjoinfree(char *s1, char *s2)
 // {
 // 	char		*new;
