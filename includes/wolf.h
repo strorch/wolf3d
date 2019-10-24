@@ -17,8 +17,8 @@
 # define SCREEN_H 800
 # define SCREEN_W 800
 
-# define texWidth 64
-# define texHeight 64
+# define T_WIDTH 64
+# define T_HEIGHT 64
 
 # define ITEMS_NUM 10
 
@@ -27,7 +27,6 @@
 # define W_E window.event
 
 # include <math.h>
-# include <pwd.h>
 # include <time.h>
 
 # ifdef linux
@@ -67,7 +66,6 @@ typedef struct	s_map
 	int			h;
 	int			w;
 }				t_map;
-
 
 typedef struct	s_util_map
 {

@@ -65,10 +65,14 @@ OBJ = $(addprefix $(OBJ_DIR), $(SOURCES:.c=.o))
 all: $(NAME)
 
 $(NAME): $(LIBFTA) $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(LIBFTA_FLAGS) -o $(NAME) $(INCLUDES) $(FRAMEWORKS)
+	@printf "\nCompiling project $(NAME)"
+	@$(CC) $(CFLAGS) $(OBJ) $(LIBFTA_FLAGS) -o $(NAME) $(INCLUDES) $(FRAMEWORKS)
+	@printf "\nCompilation done\n"
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INCLUDES_DIR)*.h
-	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES)
+	@printf "\nCompiling $<"
+	@$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES)
+	@printf "\t\tOK"
 
 $(OBJ): | $(OBJ_DIR)
 
@@ -79,14 +83,17 @@ $(LIBFTA): lib
 
 lib:
 	@make all -C $(LIBFT_DIR)
+	@printf "Libft compiled!"
 
 clean:
 	@make clean -C $(LIBFT_DIR)
 	@/bin/rm -rf $(OBJ)
 	@/bin/rm -rf $(OBJ_DIR)
+	@printf "Clean done!\n"
 
 fclean: clean
 	@make fclean -C $(LIBFT_DIR)
 	@/bin/rm -f $(NAME)
+	@printf "FClean done!\n"
 
 re: fclean all

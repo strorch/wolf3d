@@ -119,15 +119,15 @@ int		*get_pixels_map(t_game *game_h)
 		wallX -= floor((wallX));
 
 		//x coordinate on the texture
-		int texX = (int)(wallX * (double)texWidth);
-		if(side == 0 && rayDirX > 0) texX = texWidth - texX - 1;
-		if(side == 1 && rayDirY < 0) texX = texWidth - texX - 1;
+		int texX = (int)(wallX * (double)T_WIDTH);
+		if(side == 0 && rayDirX > 0) texX = T_WIDTH - texX - 1;
+		if(side == 1 && rayDirY < 0) texX = T_WIDTH - texX - 1;
 
 		for(int y = drawStart; y < drawEnd; y++)
 		{
 			int d = y * 256 - h * 128 + lineHeight * 128;  //256 and 128 factors to avoid floats
-			int texY = ((d * texHeight) / lineHeight) / 256;
-			Uint32 color = game.text[texNum][texHeight * texY + texX];
+			int texY = ((d * T_HEIGHT) / lineHeight) / 256;
+			Uint32 color = game.text[texNum][T_HEIGHT * texY + texX];
 			//make color darker for y-sides: R, G and B byte each divided through two with a "shift" and an "and"
 			if(side == 1) color = (color >> 1) & 8355711;
 			map[SCREEN_H * y + x] = color;
@@ -176,13 +176,13 @@ int		*get_pixels_map(t_game *game_h)
 			double currentFloorY = weight * floorYWall + (1.0 - weight) * posY;
 
 			int floorTexX, floorTexY;
-			floorTexX = (int)(currentFloorX * texWidth) % texWidth;
-			floorTexY = (int)(currentFloorY * texHeight) % texHeight;
+			floorTexX = (int)(currentFloorX * T_WIDTH) % T_WIDTH;
+			floorTexY = (int)(currentFloorY * T_HEIGHT) % T_HEIGHT;
 
 			//floor
-			map[SCREEN_H * y + x] = (game.text[3][texWidth * floorTexY + floorTexX] >> 1) & 8355711;
+			map[SCREEN_H * y + x] = (game.text[3][T_WIDTH * floorTexY + floorTexX] >> 1) & 8355711;
 			//ceiling (symmetrical!)
-			map[SCREEN_H * (h - y) + x] = game.text[6][texWidth * floorTexY + floorTexX];
+			map[SCREEN_H * (h - y) + x] = game.text[6][T_WIDTH * floorTexY + floorTexX];
 		}
 	}
 

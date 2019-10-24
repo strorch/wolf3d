@@ -12,6 +12,10 @@
 
 #include "wolf.h"
 
+void	handle_actions(void)
+{
+}
+
 void	key_events(SDL_Event *event, t_app *app)
 {
 	t_map		*map;
@@ -19,29 +23,32 @@ void	key_events(SDL_Event *event, t_app *app)
 	t_vec		d;
 	t_vec		p;
 	t_vec		pl;
-	float			posX;
-	float			posY;
+	t_vec		pos;
+	double		w;
 
-	posX = (*app).game->user->cam.pos.x;
-	posY = (*app).game->user->cam.pos.y;
+	pos.x = (*app).game->user->cam.pos.x;
+	pos.y = (*app).game->user->cam.pos.y;
 	map = (*app).game->map;
 	c = (*app).game->user->cam;
 	d = c.dir;
 	p = c.pos;
 	pl = c.plane;
-
 	(event->K_K == SDL_SCANCODE_ESCAPE) ? exit_message("Done!\n") : 0;
 	if (event->K_K == SDL_SCANCODE_UP)
 	{
-		double	w = 0.25;
-		if(map->keys[(int)(p.x + d.x * (c.mv_speed + w))][(int)p.y - (int)(d.y * w)] == 0) posX += d.x * c.mv_speed;
-		if(map->keys[(int)p.x - (int)(d.x * w)][(int)(p.y + d.y * (c.mv_speed + w))] == 0) posY += d.y * c.mv_speed;
+		w = 0.25;
+		if (map->keys[(int)(p.x + d.x * (c.mv_speed + w))][(int)p.y - (int)(d.y * w)] == 0)
+			pos.x += d.x * c.mv_speed;
+		if (map->keys[(int)p.x - (int)(d.x * w)][(int)(p.y + d.y * (c.mv_speed + w))] == 0)
+			pos.y += d.y * c.mv_speed;
 	}
 	else if (event->K_K == SDL_SCANCODE_DOWN)
 	{
-		double	w = -0.25;
-		if(map->keys[(int)(p.x + d.x * (c.mv_speed + w))][(int)p.y - (int)(d.y * w)] == 0) posX -= d.x * c.mv_speed;
-		if(map->keys[(int)p.x - (int)(d.x * w)][(int)(p.y + d.y * (c.mv_speed + w))] == 0) posY -= d.y * c.mv_speed;
+		w = -0.25;
+		if (map->keys[(int)(p.x + d.x * (c.mv_speed + w))][(int)p.y - (int)(d.y * w)] == 0)
+			pos.x -= d.x * c.mv_speed;
+		if (map->keys[(int)p.x - (int)(d.x * w)][(int)(p.y + d.y * (c.mv_speed + w))] == 0)
+			pos.y -= d.y * c.mv_speed;
 	}
 	else if (event->K_K == SDL_SCANCODE_RIGHT)
 	{
@@ -57,8 +64,8 @@ void	key_events(SDL_Event *event, t_app *app)
 		(*app).game->user->cam.plane.x = pl.x * cos(c.rot_speed) - pl.y * sin(c.rot_speed);
 		(*app).game->user->cam.plane.y = pl.x * sin(c.rot_speed) + pl.y * cos(c.rot_speed);
 	}
-	(*app).game->user->cam.pos.x = posX;
-	(*app).game->user->cam.pos.y = posY;
+	(*app).game->user->cam.pos.x = pos.x;
+	(*app).game->user->cam.pos.y = pos.y;
 }
 
 //void	resize_window(t_map *m, int new_width, int new_height)
@@ -107,17 +114,20 @@ int		main(int argc, char **argv)
 	t_sdl		*sdl;
 	t_app		app;
 	int			*tmp_arr;
-    char        **tmp_argv;
+	char		**tmp_argv;
 
-    if (argc == 2) {
-        if (!ft_strcmp(argv[1], "-h"))
-            print_usage();
-        tmp_argv = argv;
-    } else {
-        tmp_argv = (char**)ft_memalloc(sizeof(char*) * 2);
-        tmp_argv[1] = (char*)ft_memalloc(sizeof(char) * 15);
-        ft_strcpy(tmp_argv[1], "./maps/2.m");
-    }
+	if (argc == 2)
+	{
+		if (!ft_strcmp(argv[1], "-h"))
+			print_usage();
+		tmp_argv = argv;
+	}
+	else
+	{
+		tmp_argv = (char**)ft_memalloc(sizeof(char*) * 2);
+		tmp_argv[1] = (char*)ft_memalloc(sizeof(char) * 15);
+		ft_strcpy(tmp_argv[1], "./maps/2.m");
+	}
 	if (!(app.game = init_game(tmp_argv[1])))
 		exit_message("Something went wrong");
 	app.sdl = init_sdl();
@@ -125,17 +135,15 @@ int		main(int argc, char **argv)
 	while (1)
 	{
 		sdl_events(&event, &app);
-
 		tmp_arr = get_pixels_map(app.game);
-
 		SDL_LockSurface(sdl->sur);
 		ft_memcpy(sdl->sur->pixels, tmp_arr, sdl->sur->pitch * sdl->sur->h);
 		ft_memdel((void **)&tmp_arr);
 		SDL_UnlockSurface(sdl->sur);
-		
 		sdl->text = SDL_CreateTextureFromSurface(sdl->rend, sdl->sur);
 		SDL_RenderCopy(sdl->rend, sdl->text, NULL, NULL);
 		SDL_RenderPresent(sdl->rend);
 		SDL_DestroyTexture(sdl->text);
 	}
+	return (1);
 }

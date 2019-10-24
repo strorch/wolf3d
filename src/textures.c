@@ -17,20 +17,20 @@ static void	init_pix_in_textures(int ***texture_h, int i, int y)
 	int xorcolor;
 	int ycolor;
 	int xycolor;
-	int **texture;
+	int **t;
 
-	texture = *texture_h;
-	xorcolor = (i * 256 / texWidth) ^ (y * 256 / texHeight);
-	ycolor = y * 256 / texHeight;
-	xycolor = y * 128 / texHeight + i * 128 / texWidth;
-	texture[0][texWidth * y + i] = 65536 * 254 * (i != y && i != texWidth - y);
-	texture[1][texWidth * y + i] = xycolor + 256 * xycolor + 65536 * xycolor;
-	texture[2][texWidth * y + i] = 256 * xycolor + 65536 * xycolor;
-	texture[3][texWidth * y + i] = xorcolor + 256 * xorcolor + 65536 * xorcolor;
-	texture[4][texWidth * y + i] = 256 * xorcolor;
-	texture[5][texWidth * y + i] = 65536 * 192 * (i % 16 && y % 16);
-	texture[6][texWidth * y + i] = 65536 * ycolor;
-	texture[7][texWidth * y + i] = 128 + 256 * 128 + 65536 * 128;
+	t = *texture_h;
+	xorcolor = (i * 256 / T_WIDTH) ^ (y * 256 / T_HEIGHT);
+	ycolor = y * 256 / T_HEIGHT;
+	xycolor = y * 128 / T_HEIGHT + i * 128 / T_WIDTH;
+	t[0][T_WIDTH * y + i] = 65536 * 254 * (i != y && i != T_WIDTH - y);
+	t[1][T_WIDTH * y + i] = xycolor + 256 * xycolor + 65536 * xycolor;
+	t[2][T_WIDTH * y + i] = 256 * xycolor + 65536 * xycolor;
+	t[3][T_WIDTH * y + i] = xorcolor + 256 * xorcolor + 65536 * xorcolor;
+	t[4][T_WIDTH * y + i] = 256 * xorcolor;
+	t[5][T_WIDTH * y + i] = 65536 * 192 * (i % 16 && y % 16);
+	t[6][T_WIDTH * y + i] = 65536 * ycolor;
+	t[7][T_WIDTH * y + i] = 128 + 256 * 128 + 65536 * 128;
 }
 
 int			**get_textures(void)
@@ -43,13 +43,13 @@ int			**get_textures(void)
 		;
 	i = -1;
 	while (++i < 8)
-		if (!(t[i] = (int *)ft_memalloc(texWidth * texHeight * sizeof(int))))
-			;
+		if (!(t[i] = (int *)ft_memalloc(T_WIDTH * T_HEIGHT * sizeof(int))))
+			return (NULL);
 	i = -1;
-	while (++i < texWidth)
+	while (++i < T_WIDTH)
 	{
 		y = -1;
-		while (++y < texHeight)
+		while (++y < T_HEIGHT)
 			init_pix_in_textures(&t, i, y);
 	}
 	return (t);
