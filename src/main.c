@@ -61,15 +61,15 @@ void	key_events(SDL_Event *event, t_app *app)
 	(*app).game->user->cam.pos.y = posY;
 }
 
-void	resize_window(t_map *m, int new_width, int new_height)
-{
-	printf("HELLO!\n");
+//void	resize_window(t_map *m, int new_width, int new_height)
+//{
+//	printf("HELLO!\n");
 //	m->w = new_width;
 //	m->h = new_height;
 //	!(m->screen = SDL_GetWindowSurface(m->window))
 //	? put_error(SDL_GetError()) : 0;
 //	m->image = m->screen->pixels;
-}
+//}
 
 void	sdl_events(SDL_Event *e, t_app *app)
 {
@@ -106,7 +106,6 @@ int		main(int argc, char **argv)
 	SDL_Event	event;
 	t_sdl		*sdl;
 	t_app		app;
-	t_map		*map;
 	int			*tmp_arr;
     char        **tmp_argv;
 

@@ -33,9 +33,16 @@ static t_vec	*get_map_size(const int fd)
 
 	res = ft_get_next_line(fd, &size_str);
 	if (!(splitted_size = ft_strsplit(size_str, ' ')))
-		;
+	{
+		ft_memdel((void **)&size_str);
+		return (NULL);
+	}
+	ft_memdel((void **)&size_str);
 	if (!(size = (t_vec *)ft_memalloc(sizeof(t_vec))))
-		;
+	{
+		ft_del_str(splitted_size);
+		return (NULL);
+	}
 	if (str_array_size(splitted_size) != 2)
 		exit_message("Wrong map sizes");
 	size->x = ft_atoi(splitted_size[0]);
@@ -43,7 +50,6 @@ static t_vec	*get_map_size(const int fd)
 	if (size->x < 3 || size->y < 3)
 		exit_message("Wrong map sizes");
 	ft_del_str(splitted_size);
-	ft_memdel((void **)&size_str);
 	return (size);
 }
 
@@ -52,7 +58,7 @@ static char		**set_line_arr(const char *str, int sz_alloc)
 	char	**split;
 
 	if (!(split = ft_strsplit(str, ' ')))
-		;
+		return (NULL);
 	if (str_array_size(split) != (int)sz_alloc)
 		exit_message("Wrong map sizes");
 	return (split);
@@ -67,7 +73,7 @@ static char		***readf(int fd, t_vec *map_sz)
 
 	i = -1;
 	if (!(res = (char ***)ft_memalloc(sizeof(char **) * map_sz->x)))
-		;
+		return (NULL);
 	while (++i < map_sz->x)
 	{
 		res_fd = ft_get_next_line(fd, &str);
@@ -75,7 +81,10 @@ static char		***readf(int fd, t_vec *map_sz)
 			break ;
 		else if ((res_fd == -1)
 					|| !(res[i] = set_line_arr(str, (int)map_sz->y)))
-			;
+		{
+			ft_memdel((void **)&str);
+			return (NULL);
+		}
 		ft_memdel((void **)&str);
 	}
 	if (map_sz->x != i)
@@ -117,7 +126,7 @@ static t_vec	*find_user_pos(char ***map, t_vec *map_sz)
 			if (!ft_strcmp(map[i][j], "U"))
 			{
 				if (!(pos = (t_vec *)ft_memalloc(sizeof(t_vec))))
-					;
+					return (NULL);
 				pos->x = i;
 				pos->y = j;
 				return (pos);
@@ -133,13 +142,13 @@ static int		**tranform_to_int(char ***map, t_vec *map_sz)
 	int		**res;
 
 	if (!(res = (int **)ft_memalloc(sizeof(int *) * map_sz->x)))
-		;
+		return (NULL);
 	i = -1;
 	while (++i < map_sz->x)
 	{
 		j = -1;
 		if (!(res[i] = (int *)ft_memalloc(sizeof(int) * map_sz->y)))
-			;
+			return (NULL);
 		while (++j < map_sz->y)
 			res[i][j] = ft_atoi(map[i][j]);
 	}
@@ -162,41 +171,68 @@ static void		free_trible_pointer(char ***mem, t_vec *map_sz)
 	ft_memdel((void **)&mem);
 }
 
-t_vec			*read_map(t_game **game_h, char *fname)
+t_util_map		*get_main_struct(char *fname)
 {
 	int				fd;
-	t_game			*game;
-
 	t_vec			*map_sz;
 	char			***ch_keys;
+	t_util_map		*util_map;
 
-	int				**keys;
-
-	t_vec			*user_pos;
-
-	t_map			*map;
-
-	game = *game_h;
 	fd = open(fname, O_RDONLY);
 	if (!(map_sz = get_map_size(fd)))
-		;
+		exit_message("Error while reading sizes");
 	if (!(ch_keys = readf(fd, map_sz)))
-		;
-	if (!(map = (t_map *)ft_memalloc(sizeof(t_map))))
-		;
-	if (!(keys_validation(ch_keys, map_sz)))
-		;
-	if (!(keys = tranform_to_int(ch_keys, map_sz)))
-		;
+		exit_message("Error while map parsing");
+	if (!(util_map = (t_util_map *)ft_memalloc(sizeof(t_util_map))))
+	{
+		free_trible_pointer(ch_keys, map_sz);
+		ft_memdel((void **)&map_sz);
+		return (NULL);
+	}
+	util_map->ch_keys = ch_keys;
+	util_map->map_sz = map_sz;
 	close(fd);
-	if (!(user_pos = find_user_pos(ch_keys, map_sz)))
-		;
-	free_trible_pointer(ch_keys, map_sz);
-	map->h = map_sz->x;
-	map->w = map_sz->y;
+	return (util_map);
+}
+
+void			free_util_map(t_util_map *ms)
+{
+	free_trible_pointer(ms->ch_keys, ms->map_sz);
+	ft_memdel((void **)&ms->map_sz);
+	ft_memdel((void **)&ms);
+}
+
+t_map			*map_init(t_util_map *ms, int **keys)
+{
+	t_map	*map;
+
+	if (!(map = (t_map *)ft_memalloc(sizeof(t_map))))
+		return (NULL);
+	map->h = ms->map_sz->x;
+	map->w = ms->map_sz->y;
 	map->keys = keys;
-	ft_memdel((void **)&map_sz);
-	game->map = map;
+	return (map);
+}
+
+t_vec			*read_map(t_game **game_h, char *fname)
+{
+	t_game			*game;
+	int				**keys;
+	t_vec			*user_pos;
+	t_util_map		*ms;
+
+	game = *game_h;
+	if (!(ms = get_main_struct(fname)))
+		return (NULL);
+	if (!(keys_validation(ms->ch_keys, ms->map_sz)))
+		exit_message("Keys is not valid");
+	if (!(keys = tranform_to_int(ms->ch_keys, ms->map_sz)))
+		exit_message("Parsing unexpected error");
+	if (!(user_pos = find_user_pos(ms->ch_keys, ms->map_sz)))
+		exit_message("User search error");
+	if (!(game->map = map_init(ms, keys)))
+		exit_message("Error while map initialization");
+	free_util_map(ms);
 	return (user_pos);
 }
 
@@ -206,13 +242,13 @@ t_game			*init_game(char *fname)
 	t_vec	*user_pos;
 
 	if (!(game = (t_game *)ft_memalloc(sizeof(t_game))))
-		;
+		return (NULL);
 	if (!(user_pos = read_map(&game, fname)))
-		;
+		exit_message("Error while file parsing");
 	if (!(game->user = init_user(user_pos)))
-		;
+		exit_message("Error while user defining");
 	ft_memdel((void **)&user_pos);
 	if (!(game->text = get_textures()))
-		;
+		exit_message("Error while textures defining");
 	return (game);
 }

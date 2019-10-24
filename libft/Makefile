@@ -10,8 +10,6 @@
 #                                                                              #
 # **************************************************************************** #
 
-# TODO: http://www.cs.colby.edu/maxwell/courses/tutorials/maketutor/
-
 NAME = libft.a
 
 FLAGS = -Wall -Wextra -Werror -c

@@ -68,6 +68,13 @@ typedef struct	s_map
 	int			w;
 }				t_map;
 
+
+typedef struct	s_util_map
+{
+	t_vec		*map_sz;
+	char		***ch_keys;
+}				t_util_map;
+
 typedef struct	s_sdl
 {
 	SDL_Window		*window;

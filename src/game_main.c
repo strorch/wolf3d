@@ -126,7 +126,6 @@ int		*get_pixels_map(t_game *game_h)
 		for(int y = drawStart; y < drawEnd; y++)
 		{
 			int d = y * 256 - h * 128 + lineHeight * 128;  //256 and 128 factors to avoid floats
-			// TODO: avoid the division to speed this up
 			int texY = ((d * texHeight) / lineHeight) / 256;
 			Uint32 color = game.text[texNum][texHeight * texY + texX];
 			//make color darker for y-sides: R, G and B byte each divided through two with a "shift" and an "and"
