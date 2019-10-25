@@ -83,7 +83,6 @@ $(LIBFTA): lib
 
 lib:
 	@make all -C $(LIBFT_DIR)
-	@printf "Libft compiled!"
 
 clean:
 	@make clean -C $(LIBFT_DIR)

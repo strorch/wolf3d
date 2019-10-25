@@ -40,7 +40,7 @@ int			**get_textures(void)
 	int **t;
 
 	if (!(t = (int **)ft_memalloc(sizeof(int *) * 8)))
-		;
+		return (NULL);
 	i = -1;
 	while (++i < 8)
 		if (!(t[i] = (int *)ft_memalloc(T_WIDTH * T_HEIGHT * sizeof(int))))
