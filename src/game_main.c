@@ -14,186 +14,199 @@
 
 int		*get_pixels_map(t_game *game_h)
 {
-	clock_t start, end;
-	double cpu_time_used;
-	t_game game;
-	t_user user;
+	clock_t		start;
+	clock_t		end;
+	double		cpu_time_used;
+	t_game		game;
+	t_user		user;
+	int			*map;
+	double		pos_x;
+	double		pos_y;
+	double		dir_x;
+	double		dir_y;
+	double		plane_x;
+	double		plane_y;
+	int			w;
+	int			h;
+	int			x;
 
 	game = *game_h;
-	start = clock();
-	int *map = (int *)ft_memalloc(SCREEN_W * SCREEN_H * sizeof(int));
-//	printf("%i %i\n", SCREEN_W, SCREEN_H);
 	user = *game.user;
-
-	double posX = user.cam.pos.x, posY = user.cam.pos.y;  //x and y start position
-	// printf("%f %f\n", posX, posY);
-	double dirX = user.cam.dir.x, dirY = user.cam.dir.y; //initial direction vector
-	double planeX = user.cam.plane.x, planeY = user.cam.plane.y; //the 2d raycaster version of camera plane
-	// double time = 0; //time of current frame
-	// double oldTime = 0; //time of previous frame
-	int w = SCREEN_W;
-	int h = SCREEN_H;
-
-	for(int x = 0; x < w; x++)
+	start = clock();
+	map = (int *)ft_memalloc(SCREEN_W * SCREEN_H * sizeof(int));
+	pos_x = user.cam.pos.x;
+	pos_y = user.cam.pos.y;
+	dir_x = user.cam.dir.x;
+	dir_y = user.cam.dir.y;
+	plane_x = user.cam.plane.x;
+	plane_y = user.cam.plane.y;
+	w = SCREEN_W;
+	h = SCREEN_H;
+	x = -1;
+	while (++x < w)
 	{
-		//calculate ray position and direction
-		double cameraX = 2 * x / (double)w - 1; //x-coordinate in camera space
-		double cameraY = 2 * x / (double)h - 1; //x-coordinate in camera space
-		double rayDirX = dirX + planeX * cameraX;
-		double rayDirY = dirY + planeY * cameraY;
-		int mapX = (int)posX;
-		int mapY = (int)posY;
-		//length of ray from current position to next x or y-side
-		double sideDistX;
-		double sideDistY;
-		//which box of the map we're in
-		double deltaDistX = fabs(1 / rayDirX);
-		double deltaDistY = fabs(1 / rayDirY);
-		double perpWallDist;
-		int stepX;
-		int stepY;
+		double c_x;
+		double c_y;
+		double raydir_x;
+		double raydir_y;
+		double side_dist_x;
+		double side_dist_y;
+		int map_x;
+		int map_y;
+		double delta_dist_x;
+		double delta_dist_y;
+		double perp_wall_dist;
+		int step_x;
+		int step_y;
+		int hit;
+		int side;
 
-		int hit = 0; //was there a wall hit?
-		int side; //was a NS or a EW wall hit?
-		//calculate step and initial sideDist
-		if (rayDirX < 0)
+		hit = 0;
+		c_x = 2 * x / (double)w - 1;
+		c_y = 2 * x / (double)h - 1;
+		raydir_x = dir_x + plane_x * c_x;
+		raydir_y = dir_y + plane_y * c_y;
+		map_x = (int)pos_x;
+		map_y = (int)pos_y;
+		delta_dist_x = fabs(1 / raydir_x);
+		delta_dist_y = fabs(1 / raydir_y);
+		if (raydir_x < 0)
 		{
-			stepX = -1;
-			sideDistX = (posX - mapX) * deltaDistX;
+			step_x = -1;
+			side_dist_x = (pos_x - map_x) * delta_dist_x;
 		}
 		else
 		{
-			stepX = 1;
-			sideDistX = (mapX + 1.0 - posX) * deltaDistX;
+			step_x = 1;
+			side_dist_x = (map_x + 1.0 - pos_x) * delta_dist_x;
 		}
-		if (rayDirY < 0)
+		if (raydir_y < 0)
 		{
-			stepY = -1;
-			sideDistY = (posY - mapY) * deltaDistY;
+			step_y = -1;
+			side_dist_y = (pos_y - map_y) * delta_dist_y;
 		}
 		else
 		{
-			stepY = 1;
-			sideDistY = (mapY + 1.0 - posY) * deltaDistY;
+			step_y = 1;
+			side_dist_y = (map_y + 1.0 - pos_y) * delta_dist_y;
 		}
-
-		//perform DDA
 		while (hit == 0)
 		{
-			//jump to next map square, OR in x-direction, OR in y-direction
-			if (sideDistX < sideDistY)
+			if (side_dist_x < side_dist_y)
 			{
-				sideDistX += deltaDistX;
-				mapX += stepX;
+				side_dist_x += delta_dist_x;
+				map_x += step_x;
 				side = 0;
 			}
 			else
 			{
-				sideDistY += deltaDistY;
-				mapY += stepY;
+				side_dist_y += delta_dist_y;
+				map_y += step_y;
 				side = 1;
 			}
-			//Check if ray has hit a wall
-			if (game.map->keys[mapX][mapY] > 0) hit = 1;
+			if (game.map->keys[map_x][map_y] > 0)
+				hit = 1;
 		}
-		//Calculate distance projected on camera direction (Euclidean distance will give fisheye effect!)
-		if (side == 0) perpWallDist = (mapX - posX + (1 - stepX) / 2) / rayDirX;
-		else           perpWallDist = (mapY - posY + (1 - stepY) / 2) / rayDirY;
-
-		//Calculate height of line to draw on screen
-		int lineHeight = (int)(h / perpWallDist);
-
-		//calculate lowest and highest pixel to fill in current stripe
-		int drawStart = -lineHeight / 2 + h / 2;
-		if(drawStart < 0)drawStart = 0;
-		int drawEnd = lineHeight / 2 + h / 2;
-		if(drawEnd >= h)drawEnd = h - 1;
-
-		//texturing calculations
-		int texNum = game.map->keys[mapX][mapY] - 1; //1 subtracted from it so that texture 0 can be used!
-
-		//calculate value of wallX
-		double wallX; //where exactly the wall was hit
-		if (side == 0) wallX = posY + perpWallDist * rayDirY;
-		else           wallX = posX + perpWallDist * rayDirX;
-		wallX -= floor((wallX));
-
-		//x coordinate on the texture
-		int texX = (int)(wallX * (double)T_WIDTH);
-		if(side == 0 && rayDirX > 0) texX = T_WIDTH - texX - 1;
-		if(side == 1 && rayDirY < 0) texX = T_WIDTH - texX - 1;
-
-		for(int y = drawStart; y < drawEnd; y++)
+		if (side == 0)
+			perp_wall_dist = (map_x - pos_x + (1 - step_x) / 2) / raydir_x;
+		else
+			perp_wall_dist = (map_y - pos_y + (1 - step_y) / 2) / raydir_y;
+		int line_height;
+		int draw_start;
+		int draw_end;
+		line_height = (int)(h / perp_wall_dist);
+		draw_start = -line_height / 2 + h / 2;
+		draw_end = line_height / 2 + h / 2;
+		if (draw_start < 0)
+			draw_start = 0;
+		if (draw_end >= h)
+			draw_end = h - 1;
+/*
+** texturing calculations
+*/
+		int tex_num;
+		double wall_x;
+		tex_num = game.map->keys[map_x][map_y] - 1;
+		if (side == 0)
+			wall_x = pos_y + perp_wall_dist * raydir_y;
+		else
+			wall_x = pos_x + perp_wall_dist * raydir_x;
+		wall_x -= floor((wall_x));
+		int tex_x;
+		int tex_y;
+		tex_x = (int)(wall_x * (double)T_WIDTH);
+		if (side == 0 && raydir_x > 0)
+			tex_x = T_WIDTH - tex_x - 1;
+		if (side == 1 && raydir_y < 0)
+			tex_x = T_WIDTH - tex_x - 1;
+		int y;
+		int color;
+		int d;
+		y = draw_start - 1;
+		while (++y < draw_end)
 		{
-			int d = y * 256 - h * 128 + lineHeight * 128;  //256 and 128 factors to avoid floats
-			int texY = ((d * T_HEIGHT) / lineHeight) / 256;
-			Uint32 color = game.text[texNum][T_HEIGHT * texY + texX];
-			//make color darker for y-sides: R, G and B byte each divided through two with a "shift" and an "and"
-			if(side == 1) color = (color >> 1) & 8355711;
+			d = y * 256 - h * 128 + line_height * 128;
+			tex_y = ((d * T_HEIGHT) / line_height) / 256;
+			color = game.text[tex_num][T_HEIGHT * tex_y + tex_x];
+			if (side == 1)
+				color = (color >> 1) & 8355711;
 			map[SCREEN_H * y + x] = color;
-			// buffer[y][x] = color;
 		}
-		//FLOOR CASTING
-		double floorXWall, floorYWall; //x, y position of the floor texel at the bottom of the wall
-
-		//4 different wall directions possible
-		if(side == 0 && rayDirX > 0)
+/*
+** FLOOR CASTING
+*/
+		double floor_wall_x;
+		double floor_wall_y;
+		if (side == 0 && raydir_x > 0)
 		{
-			floorXWall = mapX;
-			floorYWall = mapY + wallX;
+			floor_wall_x = map_x;
+			floor_wall_y = map_y + wall_x;
 		}
-		else if(side == 0 && rayDirX < 0)
+		else if (side == 0 && raydir_x < 0)
 		{
-			floorXWall = mapX + 1.0;
-			floorYWall = mapY + wallX;
+			floor_wall_x = map_x + 1.0;
+			floor_wall_y = map_y + wall_x;
 		}
-		else if(side == 1 && rayDirY > 0)
+		else if (side == 1 && raydir_y > 0)
 		{
-			floorXWall = mapX + wallX;
-			floorYWall = mapY;
+			floor_wall_x = map_x + wall_x;
+			floor_wall_y = map_y;
 		}
 		else
 		{
-			floorXWall = mapX + wallX;
-			floorYWall = mapY + 1.0;
+			floor_wall_x = map_x + wall_x;
+			floor_wall_y = map_y + 1.0;
 		}
-
-		double distWall, distPlayer, currentDist;
-
-		distWall = perpWallDist;
-		distPlayer = 0.0;
-
-		if (drawEnd < 0) drawEnd = h; //becomes < 0 when the integer overflows
-
-		//draw the floor from drawEnd to the bottom of the screen
-		for(int y = drawEnd + 1; y < h; y++)
+		double dist_wall;
+		double dist_player;
+		double current_dist;
+		dist_wall = perp_wall_dist;
+		dist_player = 0.0;
+		if (draw_end < 0)
+			draw_end = h;
+		y = draw_end;
+		double weight;
+		double current_floor_x;
+		double current_floor_y;
+		int floor_tex_x;
+		int floor_tex_y;
+		while (++y < h)
 		{
-			currentDist = h / (2.0 * y - h); //you could make a small lookup table for this instead
-
-			double weight = (currentDist - distPlayer) / (distWall - distPlayer);
-
-			double currentFloorX = weight * floorXWall + (1.0 - weight) * posX;
-			double currentFloorY = weight * floorYWall + (1.0 - weight) * posY;
-
-			int floorTexX, floorTexY;
-			floorTexX = (int)(currentFloorX * T_WIDTH) % T_WIDTH;
-			floorTexY = (int)(currentFloorY * T_HEIGHT) % T_HEIGHT;
-
-			//floor
-			map[SCREEN_H * y + x] = (game.text[3][T_WIDTH * floorTexY + floorTexX] >> 1) & 8355711;
-			//ceiling (symmetrical!)
-			map[SCREEN_H * (h - y) + x] = game.text[6][T_WIDTH * floorTexY + floorTexX];
+			current_dist = h / (2.0 * y - h);
+			weight = (current_dist - dist_player) / (dist_wall - dist_player);
+			current_floor_x = weight * floor_wall_x + (1.0 - weight) * pos_x;
+			current_floor_y = weight * floor_wall_y + (1.0 - weight) * pos_y;
+			floor_tex_x = (int)(current_floor_x * T_WIDTH) % T_WIDTH;
+			floor_tex_y = (int)(current_floor_y * T_HEIGHT) % T_HEIGHT;
+			map[SCREEN_H * y + x] = (game.text[3][T_WIDTH
+					* floor_tex_y + floor_tex_x] >> 1) & 8355711;
+			map[SCREEN_H * (h - y) + x] = game.text[6][T_WIDTH
+					* floor_tex_y + floor_tex_x];
 		}
 	}
-
 	end = clock();
-	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-/*
-    double frameTime = (time - oldTime) / 1000.0; //frameTime is the time this frame has taken, in seconds
-    print(1.0 / frameTime); //FPS counter
-*/
+	cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
 	game.user->cam.mv_speed = cpu_time_used * 5.0;
 	game.user->cam.rot_speed = cpu_time_used * 3.0;
-
-	return map;
+	return (map);
 }
