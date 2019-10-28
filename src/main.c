@@ -12,7 +12,7 @@
 
 #include "wolf.h"
 
-void	handle_actions(void)
+void	execute_actions(void)
 {
 }
 
@@ -68,23 +68,12 @@ void	key_events(SDL_Event *event, t_app *app)
 	(*app).game->user->cam.pos.y = pos.y;
 }
 
-//void	resize_window(t_map *m, int new_width, int new_height)
-//{
-//	printf("HELLO!\n");
-//	m->w = new_width;
-//	m->h = new_height;
-//	!(m->screen = SDL_GetWindowSurface(m->window))
-//	? put_error(SDL_GetError()) : 0;
-//	m->image = m->screen->pixels;
-//}
-
 void	sdl_events(SDL_Event *e, t_app *app)
 {
 	while (SDL_PollEvent(e))
 	{
 		(e->E_TYPE == SDL_KEYDOWN) ? key_events(e, app) : 0;
 		(e->E_TYPE == SDL_QUIT) ? exit_message("Done!\n") : 0;
-//		(e->W_E == SDL_WINDOWEVENT_RESIZED) ? resize_window(app->game->map, e->window.data1, e->window.data2) : 0;
 	}
 }
 
@@ -108,13 +97,9 @@ t_sdl	*init_sdl(void)
 	return (sdl);
 }
 
-int		main(int argc, char **argv)
+char	*handle_args(int argc, char **argv)
 {
-	SDL_Event	event;
-	t_sdl		*sdl;
-	t_app		app;
-	int			*tmp_arr;
-	char		**tmp_argv;
+	char		*tmp_argv;
 
 	if (argc == 2)
 	{
@@ -128,6 +113,15 @@ int		main(int argc, char **argv)
 		tmp_argv[1] = (char*)ft_memalloc(sizeof(char) * 15);
 		ft_strcpy(tmp_argv[1], "./maps/2.m");
 	}
+}
+
+int		main(int argc, char **argv)
+{
+	SDL_Event	event;
+	t_sdl		*sdl;
+	t_app		app;
+	int			*tmp_arr;
+
 	if (!(app.game = init_game(tmp_argv[1])))
 		exit_message("Something went wrong");
 	app.sdl = init_sdl();

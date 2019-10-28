@@ -89,6 +89,12 @@ typedef struct	s_game
 	int			**text;
 }				t_game;
 
+typedef struct	s_event
+{
+	int			move;
+	int			rot;
+}				t_event;
+
 typedef struct	s_app
 {
 	t_sdl		*sdl;
