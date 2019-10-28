@@ -91,14 +91,15 @@ typedef struct	s_game
 
 typedef struct	s_event
 {
-	int			move;
-	int			rot;
+	int			m;
+	int			r;
 }				t_event;
 
 typedef struct	s_app
 {
 	t_sdl		*sdl;
 	t_game		*game;
+	char		*file;
 }				t_app;
 
 /*
