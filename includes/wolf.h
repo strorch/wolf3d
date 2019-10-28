@@ -134,4 +134,9 @@ int				**get_textures(void);
 */
 int				keys_validation(char ***map, t_vec *map_sz);
 
+/*
+** game_floor.c
+*/
+void			draw_floor();
+
 #endif

@@ -38,7 +38,6 @@ int		*get_pixels_map(t_game *game_h)
 	x = -1;
 	while (++x < SCREEN_W)
 	{
-		t_vec c;
 		t_vec raydir;
 		t_vec side_dist;
 		t_vec delta_dist;
@@ -49,10 +48,8 @@ int		*get_pixels_map(t_game *game_h)
 		int side;
 
 		hit = 0;
-		c.x = 2 * x / (double)SCREEN_W - 1;
-		c.y = 2 * x / (double)SCREEN_H - 1;
-		raydir.x = dir.x + plane.x * c.x;
-		raydir.y = dir.y + plane.y * c.y;
+		raydir.x = dir.x + plane.x * (2 * x / (double)SCREEN_W - 1);
+		raydir.y = dir.y + plane.y * (2 * x / (double)SCREEN_H - 1);
 		map.x = (int)pos.x;
 		map.y = (int)pos.y;
 		delta_dist.x = fabs(1 / raydir.x);
@@ -139,54 +136,7 @@ int		*get_pixels_map(t_game *game_h)
 				color = (color >> 1) & 8355711;
 			res_map[SCREEN_H * y + x] = color;
 		}
-/*
-** FLOOR CASTING
-*/
-		t_vec floor_wall;
-		if (side == 0 && raydir.x > 0)
-		{
-			floor_wall.x = map.x;
-			floor_wall.y = map.y + wall_x;
-		}
-		else if (side == 0 && raydir.x < 0)
-		{
-			floor_wall.x = map.x + 1.0;
-			floor_wall.y = map.y + wall_x;
-		}
-		else if (side == 1 && raydir.y > 0)
-		{
-			floor_wall.x = map.x + wall_x;
-			floor_wall.y = map.y;
-		}
-		else
-		{
-			floor_wall.x = map.x + wall_x;
-			floor_wall.y = map.y + 1.0;
-		}
-		double dist_wall;
-		double dist_player;
-		double current_dist;
-		dist_wall = perp_wall_dist;
-		dist_player = 0.0;
-		if (draw_end < 0)
-			draw_end = SCREEN_H;
-		y = draw_end;
-		double weight;
-		t_vec current_floor;
-		t_vec floor_tex;
-		while (++y < SCREEN_H)
-		{
-			current_dist = SCREEN_H / (2.0 * y - SCREEN_H);
-			weight = (current_dist - dist_player) / (dist_wall - dist_player);
-			current_floor.x = weight * floor_wall.x + (1.0 - weight) * pos.x;
-			current_floor.y = weight * floor_wall.y + (1.0 - weight) * pos.y;
-			floor_tex.x = (int)(current_floor.x * T_WIDTH) % T_WIDTH;
-			floor_tex.y = (int)(current_floor.y * T_HEIGHT) % T_HEIGHT;
-			res_map[SCREEN_H * y + x] = (game.text[3][(int)(T_WIDTH
-							* floor_tex.y + floor_tex.x)] >> 1) & 8355711;
-			res_map[SCREEN_H * (SCREEN_H - y) + x] = game.text[6][(int)(T_WIDTH
-							* floor_tex.y + floor_tex.x)];
-		}
+		draw_floor(side, raydir, map, wall_x, perp_wall_dist, x, y, draw_end, pos, &res_map, game);
 	}
 	end = clock();
 	cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
