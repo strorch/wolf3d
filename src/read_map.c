@@ -78,7 +78,7 @@ static char		***readf(int fd, t_vec *map_sz)
 	{
 		res_fd = ft_get_next_line(fd, &str);
 		if (res_fd == 0)
-			continue ;
+			break ;
 		else if ((res_fd == -1)
 					|| !(res[i] = set_line_arr(str, (int)map_sz->y)))
 		{
