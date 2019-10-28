@@ -43,15 +43,13 @@ SOURCES			= \
 					colors.c
 
 ifeq ($(DESKTOP_SESSION),ubuntu)
-    INCLUDES	+=	`sdl2-config --cflags --libs` -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf -lm -ldl
+    INCLUDES	+=	`sdl2-config --cflags --libs` -lSDL2 -lm -ldl
 else
 	INCLUDES	=	-I$(FRAMEWORKS_DIR)SDL2.framework/Headers/
-	INCLUDES	+=  -I$(FRAMEWORKS_DIR)SDL2_image.framework/Headers/
-	INCLUDES	+=  -I$(FRAMEWORKS_DIR)SDL2_ttf.framework/Headers/
 	INCLUDES	+=  -F$(FRAMEWORKS_DIR)
 
 	FRAMEWORKS	=	-framework OpenGL -framework AppKit \
-					-framework SDL2 -framework SDL2_image -framework SDL2_ttf -rpath $(FRAMEWORKS_DIR)
+					-framework SDL2 -rpath $(FRAMEWORKS_DIR)
 endif
 
 INCLUDES		+=	-I$(INCLUDES_DIR)
