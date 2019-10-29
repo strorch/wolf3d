@@ -36,12 +36,15 @@ OBJ_DIR			= ./obj/
 SOURCES			= \
 					main.c \
 					game_main.c \
-					read_map.c \
 					utils.c \
 					keys_validation.c \
 					textures.c \
 					game_floor.c \
 					game_textures.c \
+					key_events.c \
+					read_map_main.c \
+					read_map_base.c \
+					read_map_util.c \
 					colors.c
 
 ifeq ($(DESKTOP_SESSION),ubuntu)

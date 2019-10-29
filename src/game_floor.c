@@ -39,28 +39,27 @@ static t_vec	get_floor_wall(t_floor_obj o)
 	return (floor_wall);
 }
 
+double			g_c_d(t_floor_obj o)
+{
+	return (SCREEN_H / (2.0 * o.y - SCREEN_H));
+}
+
 void			draw_floor(t_floor_obj o, int **res_map_h, t_game game)
 {
 	int		*res_map;
 	t_vec	floor_wall;
-	double	dist_wall;
-	double	dist_player;
-	double	current_dist;
 	double	weight;
 	t_vec	current_floor;
 	t_vec	floor_tex;
 
 	res_map = *res_map_h;
 	floor_wall = get_floor_wall(o);
-	dist_wall = o.p_w_d;
-	dist_player = 0.0;
 	if (o.draw_end < 0)
 		o.draw_end = SCREEN_H;
 	o.y = o.draw_end;
 	while (++o.y < SCREEN_H)
 	{
-		current_dist = SCREEN_H / (2.0 * o.y - SCREEN_H);
-		weight = (current_dist - dist_player) / (dist_wall - dist_player);
+		weight = (g_c_d(o)) / (o.p_w_d);
 		current_floor.x = weight * floor_wall.x + (1.0 - weight) * o.pos.x;
 		current_floor.y = weight * floor_wall.y + (1.0 - weight) * o.pos.y;
 		floor_tex.x = (int)(current_floor.x * T_WIDTH) % T_WIDTH;

@@ -103,6 +103,13 @@ typedef struct	s_cast
 	int			hit;
 }				t_cast;
 
+typedef struct	s_util_tex
+{
+	int			tex_num;
+	double		wall_x;
+	t_vec		tex;
+}				t_util_tex;
+
 typedef struct	s_floor_obj
 {
 	int			side;
@@ -169,5 +176,24 @@ void			draw_floor(t_floor_obj o, int **res_map_h, t_game game);
 ** game_textures.c
 */
 t_floor_obj		draw_textures(t_floor_obj o, int **res_map_h, t_game game);
+
+/*
+** key_events.c
+*/
+void			key_events(SDL_Event *event, t_app *app);
+
+/*
+** read_map_util.c
+*/
+void			free_trible_pointer(char ***mem, t_vec *map_sz);
+t_util_map		*get_main_struct(char *fname);
+int				**tranform_to_int(char ***map, t_vec *map_sz);
+t_vec			*find_user_pos(char ***map, t_vec *map_sz);
+
+/*
+** read_map_base.c
+*/
+char			***readf(int fd, t_vec *map_sz);
+t_vec			*get_map_size(const int fd);
 
 #endif
