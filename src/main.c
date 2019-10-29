@@ -47,7 +47,7 @@ void	key_events(SDL_Event *event, t_app *app)
 
 	e.m = 0;
 	e.r = 0;
-	(event->K_K == SDL_SCANCODE_ESCAPE) ? exit_message("Done!\n") : 0;
+	(event->K_K == SDL_SCANCODE_ESCAPE) ? exit_message("Done!") : 0;
 	(event->K_K == SDL_SCANCODE_UP) ? (e.m = 1) : 0;
 	(event->K_K == SDL_SCANCODE_DOWN) ? (e.m = -1) : 0;
 	(event->K_K == SDL_SCANCODE_RIGHT) ? (e.r = -1) : 0;
@@ -60,7 +60,7 @@ void	sdl_events(SDL_Event *e, t_app *app)
 	while (SDL_PollEvent(e))
 	{
 		(e->E_TYPE == SDL_KEYDOWN) ? key_events(e, app) : 0;
-		(e->E_TYPE == SDL_QUIT) ? exit_message("Done!\n") : 0;
+		(e->E_TYPE == SDL_QUIT) ? exit_message("Done!") : 0;
 	}
 }
 
@@ -88,6 +88,7 @@ t_sdl	*init_sdl(void)
 char	*handle_args(int argc, char **argv)
 {
 	char		*tmp_argv;
+	char		*const_ch;
 
 	if (argc == 2)
 	{
@@ -97,8 +98,10 @@ char	*handle_args(int argc, char **argv)
 	}
 	else
 	{
-		tmp_argv = (char*)ft_memalloc(sizeof(char) * 15);
-		ft_strcpy(tmp_argv, "./maps/2.m");
+		const_ch = "./maps/2.m";
+		if (!(tmp_argv = ft_strnew(ft_strlen(const_ch))))
+			exit_message("Memory error");
+		ft_strcpy(tmp_argv, const_ch);
 	}
 	return (tmp_argv);
 }

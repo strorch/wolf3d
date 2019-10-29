@@ -98,6 +98,21 @@ typedef struct	s_app
 	char		*file;
 }				t_app;
 
+typedef struct	s_floor_obj
+{
+	int			side;
+	t_vec		raydir;
+	t_vec		map;
+	double		wall_x;
+	double		perp_wall_dist;
+	int			x;
+	int			y;
+	int			draw_end;
+	t_vec		pos;
+	int			**res_map_h;
+	t_game		game;
+}				t_floor_obj;
+
 /*
 ** read_map.c
 */
