@@ -41,6 +41,7 @@ SOURCES			= \
 					keys_validation.c \
 					textures.c \
 					game_floor.c \
+					game_textures.c \
 					colors.c
 
 ifeq ($(DESKTOP_SESSION),ubuntu)

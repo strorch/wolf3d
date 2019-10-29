@@ -63,12 +63,6 @@ typedef struct	s_map
 	int			w;
 }				t_map;
 
-typedef struct	s_util_map
-{
-	t_vec		*map_sz;
-	char		***ch_keys;
-}				t_util_map;
-
 typedef struct	s_sdl
 {
 	SDL_Window		*window;
@@ -98,20 +92,37 @@ typedef struct	s_app
 	char		*file;
 }				t_app;
 
+/*
+** UTILS structures
+*/
+typedef struct	s_cast
+{
+	t_vec		side_dist;
+	t_vec		delta_dist;
+	t_vec		step;
+	int			hit;
+}				t_cast;
+
 typedef struct	s_floor_obj
 {
 	int			side;
 	t_vec		raydir;
 	t_vec		map;
 	double		wall_x;
-	double		perp_wall_dist;
+	double		p_w_d;
 	int			x;
 	int			y;
 	int			draw_end;
+	int			draw_start;
+	int			line_height;
 	t_vec		pos;
-	int			**res_map_h;
-	t_game		game;
 }				t_floor_obj;
+
+typedef struct	s_util_map
+{
+	t_vec		*map_sz;
+	char		***ch_keys;
+}				t_util_map;
 
 /*
 ** read_map.c
@@ -152,6 +163,11 @@ int				keys_validation(char ***map, t_vec *map_sz);
 /*
 ** game_floor.c
 */
-void			draw_floor();
+void			draw_floor(t_floor_obj o, int **res_map_h, t_game game);
+
+/*
+** game_textures.c
+*/
+t_floor_obj		draw_textures(t_floor_obj o, int **res_map_h, t_game game);
 
 #endif
