@@ -43,8 +43,9 @@ t_vec			*get_map_size(const int fd)
 	int		res;
 
 	res = ft_get_next_line(fd, &size_str);
-	if (res == -1 || !(splitted_size = ft_strsplit(size_str, ' ')))
+	if (res == -1)
 		return (NULL);
+	splitted_size = ft_strsplit(size_str, ' ');
 	ft_memdel((void **)&size_str);
 	if (!(size = (t_vec *)ft_memalloc(sizeof(t_vec))))
 	{
